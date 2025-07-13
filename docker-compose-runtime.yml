@@ -1,0 +1,31 @@
+# Configuração do container para execução em outros computadores
+
+services:
+  # O serviço do banco de dados não muda nada.
+  db:
+    image: postgres:16
+    container_name: task-management-db
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=your_password
+      - POSTGRES_DB=task_management_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # O serviço da API é modificado
+  api:
+    container_name: task-management-api
+    image: kalbaitzer/task-management-api:1.0
+    ports:
+      - "5000:8080"
+    environment:
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=task_management_db;Username=postgres;Password=your_password
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:

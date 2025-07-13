@@ -1,0 +1,35 @@
+# Arquivos de dependência e pacotes
+**/[Bb]in/
+**/[Oo]bj/
+/packages/
+*.nupkg
+*.nuget.props
+*.nuget.targets
+
+# Arquivos específicos de IDEs e editores
+.vs/
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Arquivos de build e de publicação
+/publish/
+/artifacts/
+
+# Arquivos de configuração de ambiente local (não devem ser compartilhados)
+**/appsettings.Development.json
+**/launchSettings.json
+**/secrets.json
+
+# Logs e arquivos de cache
+*.log
+*.cache
+*.sdf
+*.vsp
+
+# Arquivos do sistema operacional
+[Tt]humbs.db
+$RECYCLE.BIN/
+.DS_Store
