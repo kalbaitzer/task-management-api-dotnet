@@ -12,10 +12,7 @@ public class ProjectService : IProjectService
     private readonly ITaskRepository _taskRepository; // Dependência crucial para a Regra de Negócio 2
     private readonly IUnitOfWork _unitOfWork;
 
-    public ProjectService(
-        IProjectRepository projectRepository,
-        ITaskRepository taskRepository,
-        IUnitOfWork unitOfWork)
+    public ProjectService(IProjectRepository projectRepository, ITaskRepository taskRepository, IUnitOfWork unitOfWork)
     {
         _projectRepository = projectRepository;
         _taskRepository = taskRepository;

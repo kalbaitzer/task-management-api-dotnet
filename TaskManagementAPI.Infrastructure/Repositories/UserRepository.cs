@@ -28,18 +28,14 @@ public class UserRepository : IUserRepository
     }
 
     /// <summary>
-    /// Busca um usuário pelo seu endereço de e-mail de forma 'case-insensitive'.
+    /// Busca todos os usuários cadastrados.
     /// </summary>
-    /// <param name="email">O e-mail a ser pesquisado.</param>
-    /// <returns>A entidade User ou nulo se não for encontrada.</returns>
-    public async Task<User?> GetByEmailAsync(string email)
+    public async Task<IEnumerable<User>> GetListAsync()
     {
-        // FirstOrDefaultAsync é usado porque esperamos no máximo um resultado,
-        // já que o e-mail é uma chave única.
-        // Comparar em minúsculas garante uma busca case-insensitive, que é o
-        // comportamento esperado para e-mails.
+        // Obtém a lista de usuários cadastrados ordenados pelo nome.
         return await _context.Users
-            .FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
+            .OrderByDescending(u => u.Name)
+            .ToListAsync();
     }
 
     /// <summary>
@@ -51,5 +47,14 @@ public class UserRepository : IUserRepository
     {
         // FindAsync é o método mais eficiente para buscar uma entidade pela sua chave primária.
         return await _context.Users.FindAsync(id);
+    }
+
+    /// <summary>
+    /// Marca um usuário para deleção.
+    /// <param name="user">A entidade User a ser removida.</param>
+    /// </summary>
+    public void Delete(User user)
+    {
+        _context.Users.Remove(user);
     }
 }
