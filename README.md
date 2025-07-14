@@ -4,7 +4,7 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue)
 ![Docker](https://img.shields.io/badge/Docker-Ready-blue)
 ![Arquitetura](https://img.shields.io/badge/Arquitetura-Clean-orange)
-![Visual Studio Code](https://custom-icon-badges.demolab.com/badge/Visual%20Studio%20Code-0078d7.svg?logo=vsc&logoColor=white)(#)
+![Visual Studio Code](https://custom-icon-badges.demolab.com/badge/Visual%20Studio%20Code-0078d7.svg?logo=vsc&logoColor=white)
 
 ## Sobre o Projeto
 
@@ -36,7 +36,7 @@ A API implementa as seguintes regras de negócio:
 - **Arquitetura**: Clean Architecture
 - **Conteinerização**: Docker & Docker Compose
 - **Ambiente de Desenvolvimento**: Visual Studio Code
-- **Versionamento de Código**: Git
+- **Versionamento de Código**: Git e GitHub
 - **Teste da API**: Postman
 
 ---
@@ -162,9 +162,9 @@ Esta é a maneira mais simples e recomendada de executar toda a aplicação.
 
 6. **Execução do contêiner em outros computadores**: Para executar o contêiner em outros computadores é necessário executar os seguintes passos:
    
-   1) Criar uma pasta no computador onde o contêiner será executado com o nome `task-management-api`
+   1. Criar uma pasta no computador onde o contêiner será executado com o nome `task-management-api`
    
-   2) Criar um arquivo na pasta `task-management-api` com o nome `docker-compose.yml` com o seguinte conteúdo:
+   2. Criar um arquivo na pasta `task-management-api` com o nome `docker-compose.yml` com o seguinte conteúdo:
       ```yaml
          # Configuração do container para execução em outros computadores
 
@@ -201,7 +201,7 @@ Esta é a maneira mais simples e recomendada de executar toda a aplicação.
       O conteúdo dste arquivo é diferente do usado no computador de desenvolvimento.
       Este arquivo está disponível na raiz do projeto com o nome `docker-compose-runtime.yml`.
 
-   3) No terminal, na pasta `task-management-api`, execute:
+   3. No terminal, na pasta `task-management-api`, execute:
       ```bash
          docker-compose up -d
       ```
