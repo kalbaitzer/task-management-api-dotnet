@@ -316,45 +316,45 @@ O objetivo aqui é melhorar a manutenibilidade e a clareza do código à medida 
 
 - **Implementar o Padrão CQRS (Command Query Responsibility Segregation):**
 
-O que é? Atualmente, nossos Services fazem tudo: leem dados, validam, e escrevem dados. CQRS sugere separar as operações de escrita (Commands) das operações de leitura (Queries).
+   - O que é? Atualmente, nossos Services fazem tudo: leem dados, validam, e escrevem dados. CQRS sugere separar as operações de escrita (Commands) das operações de leitura (Queries).
 
--Por que melhorar? O modelo que você precisa para criar ou atualizar uma tarefa (com validações, entidades ricas) é muito diferente do modelo que você precisa para simplesmente listar tarefas (um DTO "achatado" e otimizado para leitura). Separar isso simplifica radicalmente a lógica.
+   - Por que melhorar? O modelo que você precisa para criar ou atualizar uma tarefa (com validações, entidades ricas) é muito diferente do modelo que você precisa para simplesmente listar tarefas (um DTO "achatado" e otimizado para leitura). Separar isso simplifica radicalmente a lógica.
 
-Como implementar? Usando uma biblioteca como a MediatR, que é quase um padrão de facto em projetos .NET modernos para implementar CQRS e outros padrões de mensageria interna.
+   - Como implementar? Usando uma biblioteca como a MediatR, que é quase um padrão de facto em projetos .NET modernos para implementar CQRS e outros padrões de mensageria interna.
 
 - **Automatizar o Mapeamento de Objetos com AutoMapper:**
 
-O que é? No momento, nós mapeamos manualmente as entidades para DTOs nos nossos serviços (ex: new TaskDto { Id = taskEntity.Id, ... }).
+   - O que é? No momento, nós mapeamos manualmente as entidades para DTOs nos nossos serviços (ex: new TaskDto { Id = taskEntity.Id, ... }).
 
-Por que melhorar? Isso é repetitivo e propenso a erros. Se você adicionar um campo na entidade e no DTO, pode se esquecer de adicioná-lo no mapeamento. O AutoMapper é uma biblioteca que automatiza essa conversão com base em convenções.
+   - Por que melhorar? Isso é repetitivo e propenso a erros. Se você adicionar um campo na entidade e no DTO, pode se esquecer de adicioná-lo no mapeamento. O AutoMapper é uma biblioteca que automatiza essa conversão com base em convenções.
 
-Como implementar? Você define "perfis" de mapeamento uma vez (ex: "mapeie TaskEntity para TaskDto") e depois, no serviço, o código se resume a uma única linha: _mapper.Map<TaskDto>(taskEntity).
+   - Como implementar? Você define "perfis" de mapeamento uma vez (ex: "mapeie TaskEntity para TaskDto") e depois, no serviço, o código se resume a uma única linha: _mapper.Map<TaskDto>(taskEntity).
 
 - **Validação Avançada com FluentValidation:**
 
-O que é? Usamos Data Annotations ([Required], [MaxLength]) nos nossos DTOs, o que é bom. O FluentValidation é uma biblioteca que leva a validação para o próximo nível.
+   - O que é? Usamos Data Annotations ([Required], [MaxLength]) nos nossos DTOs, o que é bom. O FluentValidation é uma biblioteca que leva a validação para o próximo nível.
 
-Por que melhorar? Ele permite criar regras de validação muito mais complexas e expressivas usando expressões lambda, desacoplando as regras de validação dos DTOs e tornando-as mais fáceis de testar unitariamente.
+   - Por que melhorar? Ele permite criar regras de validação muito mais complexas e expressivas usando expressões lambda, desacoplando as regras de validação dos DTOs e tornando-as mais fáceis de testar unitariamente.
 
 ### 2. Qualidade e Testes
 Já temos testes de unidade, o que é excelente. O próximo passo é garantir que as partes integradas funcionem.
 
 - **Implementar Testes de Integração:**
 
-O que é? São testes que verificam se as diferentes camadas da nossa aplicação funcionam juntas. O teste principal seria iniciar uma versão em memória da nossa API e fazer chamadas HTTP reais aos controllers.
+   - O que é? São testes que verificam se as diferentes camadas da nossa aplicação funcionam juntas. O teste principal seria iniciar uma versão em memória da nossa API e fazer chamadas HTTP reais aos controllers.
 
-Por que melhorar? Isso nos permite testar o fluxo completo: Controller -> Service -> Repository -> Banco de Dados (em memória ou um de teste). É a melhor forma de testar a autorização baseada em headers, o roteamento e a serialização JSON.
+   - Por que melhorar? Isso nos permite testar o fluxo completo: Controller -> Service -> Repository -> Banco de Dados (em memória ou um de teste). É a melhor forma de testar a autorização baseada em headers, o roteamento e a serialização JSON.
 
-Como implementar? Usando a classe WebApplicationFactory do ASP.NET Core, que é projetada especificamente para este fim.
+   - Como implementar? Usando a classe WebApplicationFactory do ASP.NET Core, que é projetada especificamente para este fim.
 
 ### 3. Performance e Escalabilidade
 À medida que o número de usuários e dados cresce, precisamos garantir que a API continue rápida.
 
 - **Implementar Paginação:**
 
-O que é? Atualmente, nossos endpoints GET que listam projetos ou tarefas retornam todos os registros de uma vez. Se um usuário tiver 10.000 tarefas, isso será inviável.
+   - O que é? Atualmente, nossos endpoints GET que listam projetos ou tarefas retornam todos os registros de uma vez. Se um usuário tiver 10.000 tarefas, isso será inviável.
 
-Por que melhorar? A paginação (ex: GET /api/projects?page=1&pageSize=20) é essencial para garantir que as respostas da API sejam rápidas e que não sobrecarreguem nem o servidor nem o cliente.
+   - Por que melhorar? A paginação (ex: GET /api/projects?page=1&pageSize=20) é essencial para garantir que as respostas da API sejam rápidas e que não sobrecarreguem nem o servidor nem o cliente.
 
 - **Implementar Estratégia de Cache:**
 
