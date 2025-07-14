@@ -270,34 +270,34 @@ A API assume um modelo de autenticação externa, onde a identidade do usuário 
 ## Perguntas para o Product Owner
 
 ### 1. Funcionalidades do Usuário e Colaboração
-Estas perguntas aprofundam o "core" do produto: o gerenciamento de tarefas.
+Estas perguntas aprofundam o `core` do produto: o gerenciamento de tarefas.
 
 - **Como os usuários devem colaborar numa mesma tarefa? Apenas uma pessoa é responsável por vez, ou podemos ter múltiplos responsáveis?**
-Define se o relacionamento entre User e Task é um-para-muitos ou muitos-para-muitos, o que muda significativamente o esquema do banco de dados.
+Define se o relacionamento entre `User` e `Task` é um-para-muitos ou muitos-para-muitos, o que muda significativamente o esquema do banco de dados.
 
 - **Os usuários precisam de 'subtarefas' dentro de uma tarefa principal?**
 Isso introduz uma estrutura hierárquica (árvore) no nosso modelo de dados, o que requer uma lógica mais complexa para consultas e atualizações.
 
 - **Existe a necessidade de anexar arquivos (imagens, documentos, etc) a uma tarefa ou a um projeto?**
-Isso ajuda a decidir se precisamos de um serviço de armazenamento de objetos como Amazon S3 ou Azure Blob Storage e como isso impacta a nossa arquitetura e custos.
+Isso ajuda a decidir se precisamos de um serviço de armazenamento de objetos como `Amazon S3` ou `Azure Blob Storage` e como isso impacta a nossa arquitetura e custos.
 
 - **Como funciona o convite e o compartilhamento de um projeto? Um usuário pode convidar outro para um projeto com diferentes níveis de permissão (ex: apenas 'visualizar' vs. 'editar')?**
-Isso vai muito além do nosso sistema simples de Role ("User", "Manager") e sugere a necessidade de uma lista de controle de acesso (ACL) por projeto, o que é um grande incremento na complexidade da autorização.
+Isso vai muito além do nosso sistema simples de Role (`User`, `Manager`) e sugere a necessidade de uma lista de controle de acesso `(ACL)` por projeto, o que é um grande incremento na complexidade da autorização.
 
 ### 2. Notificações e Engajamento
 Como mantemos os usuários informados e engajados?
 
 - **Quando e como um usuário deve ser notificado? (Ex: quando uma tarefa é atribuída a ele, quando o status muda, quando uma data de vencimento se aproxima?)**
-Define a necessidade de um sistema de notificações, que pode envolver serviços de e-mail (SendGrid), push notifications (Firebase) e/ou a criação de uma fila de mensagens (RabbitMQ, SQS) para processar esses eventos de forma assíncrona.
+Define a necessidade de um sistema de notificações, que pode envolver serviços de e-mail `(SendGrid)`, push notifications `(Firebase)` e/ou a criação de uma fila de mensagens `(RabbitMQ, SQS)` para processar esses eventos de forma assíncrona.
 
 ### 3. Dados, Relatórios e Inteligência
 Já temos um relatório básico. O que mais podemos fazer com os dados?
 
 - **Além da média de tarefas, que outras métricas ou KPIs (Key Performance Indicators) são importantes para um 'Gerente' visualizar num dashboard?**
-Ajuda a projetar o futuro do módulo de relatórios. Pode indicar a necessidade de visualizações de dados mais complexas, gráficos, ou até mesmo um serviço de BI (Business Intelligence).
+Ajuda a projetar o futuro do módulo de relatórios. Pode indicar a necessidade de visualizações de dados mais complexas, gráficos, ou até mesmo um serviço de BI `(Business Intelligence)`.
 
 - **Precisaremos exportar dados de projetos ou relatórios para formatos como CSV ou PDF?**
-A geração de arquivos pode ser uma operação demorada. Isso pode exigir a implementação de "background jobs" (tarefas em segundo plano) com ferramentas como Hangfire ou Quartz.NET para não bloquear a API.
+A geração de arquivos pode ser uma operação demorada. Isso pode exigir a implementação de `background jobs` (tarefas em segundo plano) com ferramentas como Hangfire ou `Quartz.NET` para não bloquear a API.
 
 ### 4. Escalabilidade e Requisitos Não-Funcionais
 Estas perguntas ajudam a preparar a infraestrutura para o futuro.
@@ -306,7 +306,7 @@ Estas perguntas ajudam a preparar a infraestrutura para o futuro.
 Impacta diretamente as decisões sobre o tipo de banco de dados, estratégias de cache, otimização de consultas e a infraestrutura de nuvem necessária.
 
 - **A API precisará se integrar com sistemas de terceiros no futuro? (Ex: Google Calendar para sincronizar datas de vencimento, ou Trello/Jira para importar tarefas).**
-Planejar integrações desde cedo pode influenciar o design da API, tornando-a mais flexível e aberta, talvez exigindo o uso de padrões como webhooks ou OAuth para autenticação de terceiros.
+Planejar integrações desde cedo pode influenciar o design da API, tornando-a mais flexível e aberta, talvez exigindo o uso de padrões como `Webhooks` ou `OAuth` para autenticação de terceiros.
 
 ---
 
@@ -321,7 +321,7 @@ O objetivo aqui é melhorar a manutenibilidade e a clareza do código à medida 
 
    - Por que melhorar? O modelo que você precisa para criar ou atualizar uma tarefa (com validações, entidades ricas) é muito diferente do modelo que você precisa para simplesmente listar tarefas (um DTO "achatado" e otimizado para leitura). Separar isso simplifica radicalmente a lógica.
 
-   - Como implementar? Usando uma biblioteca como a MediatR, que é quase um padrão de facto em projetos .NET modernos para implementar CQRS e outros padrões de mensageria interna.
+   - Como implementar? Usando uma biblioteca como a MediatR, que é quase um padrão de facto em projetos .NET modernos para implementar `CQRS` e outros padrões de mensageria interna.
 
 - **Automatizar o Mapeamento de Objetos com AutoMapper:**
 
@@ -333,7 +333,7 @@ O objetivo aqui é melhorar a manutenibilidade e a clareza do código à medida 
 
 - **Validação Avançada com FluentValidation:**
 
-   - O que é? Usamos Data Annotations ([Required], [MaxLength]) nos nossos DTOs, o que é bom. O FluentValidation é uma biblioteca que leva a validação para o próximo nível.
+   - O que é? Usamos `Data Annotations` (`[Required]`, `[MaxLength]`) nos nossos DTOs, o que é bom. O FluentValidation é uma biblioteca que leva a validação para o próximo nível.
 
    - Por que melhorar? Ele permite criar regras de validação muito mais complexas e expressivas usando expressões lambda, desacoplando as regras de validação dos DTOs e tornando-as mais fáceis de testar unitariamente.
 
@@ -344,18 +344,18 @@ Já temos testes de unidade, o que é excelente. O próximo passo é garantir qu
 
    - O que é? São testes que verificam se as diferentes camadas da nossa aplicação funcionam juntas. O teste principal seria iniciar uma versão em memória da nossa API e fazer chamadas HTTP reais aos controllers.
 
-   - Por que melhorar? Isso nos permite testar o fluxo completo: Controller -> Service -> Repository -> Banco de Dados (em memória ou um de teste). É a melhor forma de testar a autorização baseada em headers, o roteamento e a serialização JSON.
+   - Por que melhorar? Isso nos permite testar o fluxo completo: `Controller` -> `Service` -> `Repository` -> `Banco de Dados` (em memória ou um de teste). É a melhor forma de testar a autorização baseada em headers, o roteamento e a serialização JSON.
 
-   - Como implementar? Usando a classe WebApplicationFactory do ASP.NET Core, que é projetada especificamente para este fim.
+   - Como implementar? Usando a classe `WebApplicationFactory` do `ASP.NET Core`, que é projetada especificamente para este fim.
 
 ### 3. Performance e Escalabilidade
 À medida que o número de usuários e dados cresce, precisamos garantir que a API continue rápida.
 
 - **Implementar Paginação:**
 
-   - O que é? Atualmente, nossos endpoints GET que listam projetos ou tarefas retornam todos os registros de uma vez. Se um usuário tiver 10.000 tarefas, isso será inviável.
+   - O que é? Atualmente, nossos endpoints GET que listam projetos ou tarefas retornam todos os registros de uma vez. Se um usuário tiver `10.000` tarefas, isso será inviável.
 
-   - Por que melhorar? A paginação (ex: GET /api/projects?page=1&pageSize=20) é essencial para garantir que as respostas da API sejam rápidas e que não sobrecarreguem nem o servidor nem o cliente.
+   - Por que melhorar? A paginação (ex: `GET /api/projects?page=1&pageSize=20`) é essencial para garantir que as respostas da API sejam rápidas e que não sobrecarreguem nem o servidor nem o cliente.
 
 - **Implementar Estratégia de Cache:**
 
@@ -363,10 +363,10 @@ Já temos testes de unidade, o que é excelente. O próximo passo é garantir qu
 
    - Por que melhorar? Para dados que são muito lidos, como a lista de projetos de um usuário, o cache pode reduzir drasticamente o número de acessos ao banco de dados, melhorando a performance de forma impressionante.
 
-   - Como implementar? Podemos começar com cache em memória (IMemoryCache) e, para um ambiente com múltiplas instâncias da API, evoluir para um cache distribuído com Redis.
+   - Como implementar? Podemos começar com cache em memória (`IMemoryCache)` e, para um ambiente com múltiplas instâncias da API, evoluir para um cache distribuído com `Redis`.
 
 ### 4. Infraestrutura e Deploy (Visão de Cloud)
-Nosso docker-compose é ótimo para desenvolvimento e para rodar em uma única máquina. Para um ambiente de produção real na nuvem (AWS, Azure, Google Cloud), podemos profissionalizar o deploy.
+Nosso docker-compose é ótimo para desenvolvimento e para rodar em uma única máquina. Para um ambiente de produção real na nuvem (`AWS`, `Azure`, `Google Cloud`), podemos profissionalizar o deploy.
 
 - **CI/CD (Continuous Integration / Continuous Deployment):**
 
@@ -374,28 +374,28 @@ Nosso docker-compose é ótimo para desenvolvimento e para rodar em uma única m
 
    - Como funciona?
 
-   - Build & Test: Ao fazer um push para o GitHub, uma ferramenta como GitHub Actions ou Azure DevOps é acionada. Ela executa dotnet build e dotnet test automaticamente. Se algum teste falhar, o processo para.
+   - Build & Test: Ao fazer um push para o `GitHub`, uma ferramenta como `GitHub Actions` ou `Azure DevOps` é acionada. Ela executa dotnet build e dotnet test automaticamente. Se algum teste falhar, o processo para.
 
-   - Build da Imagem Docker: Se os testes passarem, o pipeline constrói a sua imagem Docker de produção (docker build).
+   - Build da Imagem Docker: Se os testes passarem, o pipeline constrói a sua imagem `Docker` de produção (docker build).
 
-   - Push para um Container Registry Privado: A imagem é enviada para um repositório seguro, como o Azure Container Registry (ACR) ou o Amazon ECR.
+   - Push para um `Container Registry Privado`: A imagem é enviada para um repositório seguro, como o `Azure Container Registry` (`ACR`) ou o `Amazon ECR`.
 
    - Deploy: O pipeline instrui o serviço de nuvem a baixar a nova imagem e atualizar a aplicação que está no ar, muitas vezes sem nenhum tempo de inatividade (downtime).
 
 - **Orquestração de Contêineres com Kubernetes:**
 
-   - O que é? Para aplicações que precisam de alta disponibilidade e escalabilidade, o docker-compose não é suficiente. O Kubernetes (K8s) é o padrão da indústria para gerenciar contêineres em produção.
+   - O que é? Para aplicações que precisam de alta disponibilidade e escalabilidade, o docker-compose não é suficiente. O `Kubernetes` (`K8s`) é o padrão da indústria para gerenciar contêineres em produção.
 
    - Por que melhorar? Ele gerencia automaticamente a escalabilidade (ex: "se o uso de CPU passar de 80%, crie mais um contêiner da API"), a recuperação de falhas (se um contêiner cair, ele sobe outro) e o networking avançado.
 
 - **Banco de Dados como Serviço Gerenciado (PaaS):**
 
-   - O que é? Em vez de rodar o PostgreSQL em um contêiner Docker em produção (o que exige gerenciamento de backups, atualizações, segurança, etc.), usamos um serviço gerenciado como o Azure Database for PostgreSQL ou o Amazon RDS.
+   - O que é? Em vez de rodar o PostgreSQL em um contêiner Docker em produção (o que exige gerenciamento de backups, atualizações, segurança, etc.), usamos um serviço gerenciado como o `Azure Database for PostgreSQL` ou o `Amazon RDS`.
 
    - Por que melhorar? É muito mais seguro, confiável e escalável. O provedor de nuvem cuida de toda a complexidade da infraestrutura do banco de dados para você.
 
 - **Observabilidade (Logging, Métricas e Tracing):**
 
-   - Logging Estruturado: Implementar bibliotecas como o Serilog para enviar logs para uma plataforma centralizada (ex: Datadog, Elastic Stack), permitindo buscas e alertas.
+   - Logging Estruturado: Implementar bibliotecas como o Serilog para enviar logs para uma plataforma centralizada (ex: `Datadog`, `Elastic Stack`), permitindo buscas e alertas.
 
    - Health Checks: Criar um endpoint /health na API que verifica a saúde da aplicação e de suas dependências (como a conexão com o banco), para que os sistemas de monitoramento saibam se a aplicação está operacional.
