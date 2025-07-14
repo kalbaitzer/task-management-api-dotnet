@@ -176,7 +176,7 @@ Esta é a maneira mais simples e recomendada de executar toda a aplicação.
             restart: always
             environment:
                - POSTGRES_USER=postgres
-               - POSTGRES_PASSWORD=your_password
+               - POSTGRES_PASSWORD=sql_pass
                - POSTGRES_DB=task_management_db
             ports:
                - "5433:5432"
@@ -191,7 +191,7 @@ Esta é a maneira mais simples e recomendada de executar toda a aplicação.
                - "5000:8080"
             environment:
                - ASPNETCORE_URLS=http://+:8080
-               - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=task_management_db;Username=postgres;Password=your_password
+               - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=task_management_db;Username=postgres;Password=sql_pass
             depends_on:
                - db
 
@@ -264,3 +264,44 @@ A API assume um modelo de autenticação externa, onde a identidade do usuário 
 | `GET` | `/api/reports/performance`| Gera um relatório de desempenho. Somente usuários com Role `Manager`. |
 
 </details>
+
+## Perguntas para o Product Owner
+
+### 1. Funcionalidades do Usuário e Colaboração
+Estas perguntas aprofundam o "core" do produto: o gerenciamento de tarefas.
+
+**Como os usuários devem colaborar numa mesma tarefa? Apenas uma pessoa é responsável por vez, ou podemos ter múltiplos responsáveis?**
+Define se o relacionamento entre User e Task é um-para-muitos ou muitos-para-muitos, o que muda significativamente o esquema do banco de dados.
+
+**Os usuários precisam de 'subtarefas' dentro de uma tarefa principal?**
+Isso introduz uma estrutura hierárquica (árvore) no nosso modelo de dados, o que requer uma lógica mais complexa para consultas e atualizações.
+
+**Existe a necessidade de anexar arquivos (imagens, documentos, etc) a uma tarefa ou a um projeto?**
+Isso ajuda a decidir se precisamos de um serviço de armazenamento de objetos como Amazon S3 ou Azure Blob Storage e como isso impacta a nossa arquitetura e custos.
+
+**Como funciona o convite e o compartilhamento de um projeto? Um usuário pode convidar outro para um projeto com diferentes níveis de permissão (ex: apenas 'visualizar' vs. 'editar')?**
+Isso vai muito além do nosso sistema simples de Role ("User", "Manager") e sugere a necessidade de uma lista de controle de acesso (ACL) por projeto, o que é um grande incremento na complexidade da autorização.
+
+### 2. Notificações e Engajamento
+Como mantemos os usuários informados e engajados?
+
+**Quando e como um usuário deve ser notificado? (Ex: quando uma tarefa é atribuída a ele, quando o status muda, quando uma data de vencimento se aproxima?)**
+Define a necessidade de um sistema de notificações, que pode envolver serviços de e-mail (SendGrid), push notifications (Firebase) e/ou a criação de uma fila de mensagens (RabbitMQ, SQS) para processar esses eventos de forma assíncrona.
+
+### 3. Dados, Relatórios e Inteligência
+Já temos um relatório básico. O que mais podemos fazer com os dados?
+
+**Além da média de tarefas, que outras métricas ou KPIs (Key Performance Indicators) são importantes para um 'Gerente' visualizar num dashboard?**
+Ajuda a projetar o futuro do módulo de relatórios. Pode indicar a necessidade de visualizações de dados mais complexas, gráficos, ou até mesmo um serviço de BI (Business Intelligence).
+
+**Precisaremos exportar dados de projetos ou relatórios para formatos como CSV ou PDF?**
+A geração de arquivos pode ser uma operação demorada. Isso pode exigir a implementação de "background jobs" (tarefas em segundo plano) com ferramentas como Hangfire ou Quartz.NET para não bloquear a API.
+
+### 4. Escalabilidade e Requisitos Não-Funcionais
+Estas perguntas ajudam a preparar a infraestrutura para o futuro.
+
+**Qual é a nossa meta de usuários e de tarefas ativas no primeiro ano? Serão centenas, milhares ou milhões de registros?**
+Impacta diretamente as decisões sobre o tipo de banco de dados, estratégias de cache, otimização de consultas e a infraestrutura de nuvem necessária.
+
+**A API precisará se integrar com sistemas de terceiros no futuro? (Ex: Google Calendar para sincronizar datas de vencimento, ou Trello/Jira para importar tarefas).**
+Planejar integrações desde cedo pode influenciar o design da API, tornando-a mais flexível e aberta, talvez exigindo o uso de padrões como webhooks ou OAuth para autenticação de terceiros.
