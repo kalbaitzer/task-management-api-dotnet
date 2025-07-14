@@ -10,11 +10,11 @@ namespace TaskManagementAPI.API.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")] // Rota base: /api/users
-public class UserController : ControllerBase
+public class UsersController : ControllerBase
 {
     private readonly IUserService _userService;
 
-    public UserController(IUserService userService)
+    public UsersController(IUserService userService)
     {
         _userService = userService;
     }
