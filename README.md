@@ -264,6 +264,7 @@ A API assume um modelo de autenticação externa, onde a identidade do usuário 
 | `GET` | `/api/reports/performance`| Gera um relatório de desempenho. Somente usuários com Role `Manager`. |
 
 </details>
+
 ---
 
 ## Perguntas para o Product Owner
