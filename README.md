@@ -215,7 +215,7 @@ A API assume um modelo de autenticação externa, onde a identidade do usuário 
 - `X-User-Id`: O GUID do usuário que está fazendo a requisição. Este Id é previamente cadastrado na tabela `Users` para que a API possa verificar se é um usuário válido. Na inicialização do banco de dados são cadastrados dois usuários para teste.
 
 <details>
-<summary><strong>Endpoints de Usuários (/api/users)</strong></summary>
+<summary><strong>Endpoints de Usuários: /api/users</strong></summary>
 
 | Verbo | Rota | Descrição |
 | :--- | :--- | :--- |
@@ -227,7 +227,7 @@ A API assume um modelo de autenticação externa, onde a identidade do usuário 
 </details>
 
 <details>
-<summary><strong>Endpoints de Projetos (/api/projects)</strong></summary>
+<summary><strong>Endpoints de Projetos: /api/projects</strong></summary>
 
 | Verbo | Rota | Descrição |
 | :--- | :--- | :--- |
@@ -239,7 +239,7 @@ A API assume um modelo de autenticação externa, onde a identidade do usuário 
 </details>
 
 <details>
-<summary><strong>Endpoints de Tarefas (/api/tasks)</strong></summary>
+<summary><strong>Endpoints de Tarefas: /api/tasks</strong></summary>
 
 | Verbo | Rota | Descrição |
 | :--- | :--- | :--- |
@@ -255,10 +255,10 @@ A API assume um modelo de autenticação externa, onde a identidade do usuário 
 </details>
 
 <details>
-<summary><strong>Endpoints de Relatórios (`/api/reports`)</strong></summary>
+<summary><strong>Endpoints de Relatórios: /api/reports</strong></summary>
 
 | Verbo | Rota | Descrição |
 | :--- | :--- | :--- |
-| `GET` | `/api/reports/performance`| Gera um relatório de desempenho. Somente usuários com (Role `Manager`). |
+| `GET` | `/api/reports/performance`| Gera um relatório de desempenho. Somente usuários com Role `Manager`. |
 
 </details>
