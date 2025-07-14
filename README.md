@@ -314,15 +314,15 @@ Planejar integrações desde cedo pode influenciar o design da API, tornando-a m
 ### 1. Arquitetura e Design de Código
 O objetivo aqui é melhorar a manutenibilidade e a clareza do código à medida que o sistema cresce.
 
-- ** Implementar o Padrão CQRS (Command Query Responsibility Segregation):**
+- **Implementar o Padrão CQRS (Command Query Responsibility Segregation):**
 
 O que é? Atualmente, nossos Services fazem tudo: leem dados, validam, e escrevem dados. CQRS sugere separar as operações de escrita (Commands) das operações de leitura (Queries).
 
-Por que melhorar? O modelo que você precisa para criar ou atualizar uma tarefa (com validações, entidades ricas) é muito diferente do modelo que você precisa para simplesmente listar tarefas (um DTO "achatado" e otimizado para leitura). Separar isso simplifica radicalmente a lógica.
+-Por que melhorar? O modelo que você precisa para criar ou atualizar uma tarefa (com validações, entidades ricas) é muito diferente do modelo que você precisa para simplesmente listar tarefas (um DTO "achatado" e otimizado para leitura). Separar isso simplifica radicalmente a lógica.
 
 Como implementar? Usando uma biblioteca como a MediatR, que é quase um padrão de facto em projetos .NET modernos para implementar CQRS e outros padrões de mensageria interna.
 
-- ** Automatizar o Mapeamento de Objetos com AutoMapper:**
+- **Automatizar o Mapeamento de Objetos com AutoMapper:**
 
 O que é? No momento, nós mapeamos manualmente as entidades para DTOs nos nossos serviços (ex: new TaskDto { Id = taskEntity.Id, ... }).
 
@@ -330,7 +330,7 @@ Por que melhorar? Isso é repetitivo e propenso a erros. Se você adicionar um c
 
 Como implementar? Você define "perfis" de mapeamento uma vez (ex: "mapeie TaskEntity para TaskDto") e depois, no serviço, o código se resume a uma única linha: _mapper.Map<TaskDto>(taskEntity).
 
-- ** Validação Avançada com FluentValidation:**
+- **Validação Avançada com FluentValidation:**
 
 O que é? Usamos Data Annotations ([Required], [MaxLength]) nos nossos DTOs, o que é bom. O FluentValidation é uma biblioteca que leva a validação para o próximo nível.
 
@@ -339,7 +339,7 @@ Por que melhorar? Ele permite criar regras de validação muito mais complexas e
 ### 2. Qualidade e Testes
 Já temos testes de unidade, o que é excelente. O próximo passo é garantir que as partes integradas funcionem.
 
-- ** Implementar Testes de Integração:**
+- **Implementar Testes de Integração:**
 
 O que é? São testes que verificam se as diferentes camadas da nossa aplicação funcionam juntas. O teste principal seria iniciar uma versão em memória da nossa API e fazer chamadas HTTP reais aos controllers.
 
@@ -350,51 +350,51 @@ Como implementar? Usando a classe WebApplicationFactory do ASP.NET Core, que é 
 ### 3. Performance e Escalabilidade
 À medida que o número de usuários e dados cresce, precisamos garantir que a API continue rápida.
 
-- ** Implementar Paginação:**
+- **Implementar Paginação:**
 
 O que é? Atualmente, nossos endpoints GET que listam projetos ou tarefas retornam todos os registros de uma vez. Se um usuário tiver 10.000 tarefas, isso será inviável.
 
 Por que melhorar? A paginação (ex: GET /api/projects?page=1&pageSize=20) é essencial para garantir que as respostas da API sejam rápidas e que não sobrecarreguem nem o servidor nem o cliente.
 
-- ** Implementar Estratégia de Cache:**
+- **Implementar Estratégia de Cache:**
 
-O que é? Armazenar em memória resultados de requisições que são frequentes e cujos dados não mudam a todo instante.
+   - O que é? Armazenar em memória resultados de requisições que são frequentes e cujos dados não mudam a todo instante.
 
-Por que melhorar? Para dados que são muito lidos, como a lista de projetos de um usuário, o cache pode reduzir drasticamente o número de acessos ao banco de dados, melhorando a performance de forma impressionante.
+   - Por que melhorar? Para dados que são muito lidos, como a lista de projetos de um usuário, o cache pode reduzir drasticamente o número de acessos ao banco de dados, melhorando a performance de forma impressionante.
 
-Como implementar? Podemos começar com cache em memória (IMemoryCache) e, para um ambiente com múltiplas instâncias da API, evoluir para um cache distribuído com Redis.
+   - Como implementar? Podemos começar com cache em memória (IMemoryCache) e, para um ambiente com múltiplas instâncias da API, evoluir para um cache distribuído com Redis.
 
 ### 4. Infraestrutura e Deploy (Visão de Cloud)
 Nosso docker-compose é ótimo para desenvolvimento e para rodar em uma única máquina. Para um ambiente de produção real na nuvem (AWS, Azure, Google Cloud), podemos profissionalizar o deploy.
 
-- ** CI/CD (Continuous Integration / Continuous Deployment):**
+- **CI/CD (Continuous Integration / Continuous Deployment):**
 
-O que é? Um pipeline automatizado que transforma o seu git push em uma implantação em produção.
+   - O que é? Um pipeline automatizado que transforma o seu git push em uma implantação em produção.
 
-Como funciona?
+   - Como funciona?
 
-Build & Test: Ao fazer um push para o GitHub, uma ferramenta como GitHub Actions ou Azure DevOps é acionada. Ela executa dotnet build e dotnet test automaticamente. Se algum teste falhar, o processo para.
+   - Build & Test: Ao fazer um push para o GitHub, uma ferramenta como GitHub Actions ou Azure DevOps é acionada. Ela executa dotnet build e dotnet test automaticamente. Se algum teste falhar, o processo para.
 
-Build da Imagem Docker: Se os testes passarem, o pipeline constrói a sua imagem Docker de produção (docker build).
+   - Build da Imagem Docker: Se os testes passarem, o pipeline constrói a sua imagem Docker de produção (docker build).
 
-Push para um Container Registry Privado: A imagem é enviada para um repositório seguro, como o Azure Container Registry (ACR) ou o Amazon ECR.
+   - Push para um Container Registry Privado: A imagem é enviada para um repositório seguro, como o Azure Container Registry (ACR) ou o Amazon ECR.
 
-Deploy: O pipeline instrui o serviço de nuvem a baixar a nova imagem e atualizar a aplicação que está no ar, muitas vezes sem nenhum tempo de inatividade (downtime).
+   - Deploy: O pipeline instrui o serviço de nuvem a baixar a nova imagem e atualizar a aplicação que está no ar, muitas vezes sem nenhum tempo de inatividade (downtime).
 
-- ** Orquestração de Contêineres com Kubernetes:**
+- **Orquestração de Contêineres com Kubernetes:**
 
-O que é? Para aplicações que precisam de alta disponibilidade e escalabilidade, o docker-compose não é suficiente. O Kubernetes (K8s) é o padrão da indústria para gerenciar contêineres em produção.
+   - O que é? Para aplicações que precisam de alta disponibilidade e escalabilidade, o docker-compose não é suficiente. O Kubernetes (K8s) é o padrão da indústria para gerenciar contêineres em produção.
 
-Por que melhorar? Ele gerencia automaticamente a escalabilidade (ex: "se o uso de CPU passar de 80%, crie mais um contêiner da API"), a recuperação de falhas (se um contêiner cair, ele sobe outro) e o networking avançado.
+   - Por que melhorar? Ele gerencia automaticamente a escalabilidade (ex: "se o uso de CPU passar de 80%, crie mais um contêiner da API"), a recuperação de falhas (se um contêiner cair, ele sobe outro) e o networking avançado.
 
-- ** Banco de Dados como Serviço Gerenciado (PaaS):**
+- **Banco de Dados como Serviço Gerenciado (PaaS):**
 
-O que é? Em vez de rodar o PostgreSQL em um contêiner Docker em produção (o que exige gerenciamento de backups, atualizações, segurança, etc.), usamos um serviço gerenciado como o Azure Database for PostgreSQL ou o Amazon RDS.
+   - O que é? Em vez de rodar o PostgreSQL em um contêiner Docker em produção (o que exige gerenciamento de backups, atualizações, segurança, etc.), usamos um serviço gerenciado como o Azure Database for PostgreSQL ou o Amazon RDS.
 
-Por que melhorar? É muito mais seguro, confiável e escalável. O provedor de nuvem cuida de toda a complexidade da infraestrutura do banco de dados para você.
+   - Por que melhorar? É muito mais seguro, confiável e escalável. O provedor de nuvem cuida de toda a complexidade da infraestrutura do banco de dados para você.
 
 - **Observabilidade (Logging, Métricas e Tracing):**
 
-Logging Estruturado: Implementar bibliotecas como o Serilog para enviar logs para uma plataforma centralizada (ex: Datadog, Elastic Stack), permitindo buscas e alertas.
+   - Logging Estruturado: Implementar bibliotecas como o Serilog para enviar logs para uma plataforma centralizada (ex: Datadog, Elastic Stack), permitindo buscas e alertas.
 
-Health Checks: Criar um endpoint /health na API que verifica a saúde da aplicação e de suas dependências (como a conexão com o banco), para que os sistemas de monitoramento saibam se a aplicação está operacional.
+   - Health Checks: Criar um endpoint /health na API que verifica a saúde da aplicação e de suas dependências (como a conexão com o banco), para que os sistemas de monitoramento saibam se a aplicação está operacional.
