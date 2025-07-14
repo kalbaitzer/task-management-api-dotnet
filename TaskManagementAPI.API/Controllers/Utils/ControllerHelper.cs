@@ -1,8 +1,4 @@
-using System.Net;
-using TaskManagementAPI.Application.DTOs;
 using TaskManagementAPI.Application.Exceptions;
-using TaskManagementAPI.Application.Interfaces;
-using TaskManagementAPI.Core.Entities;
 
 namespace TaskManagementAPI.API.Controllers.Utils;
 
@@ -11,40 +7,17 @@ namespace TaskManagementAPI.API.Controllers.Utils;
 /// </summary>
 public static class ControllerHelper
 {
-    public static async Task<UserDto?> CheckUser(HttpRequest request, IUserService userService)
+    public static Guid GetUserId(HttpRequest request)
     {
-        if (!request.Headers.TryGetValue("X-User-Id", out var userIdStr) || !Guid.TryParse(userIdStr, out var userId))
+        if (request.Headers.TryGetValue("X-User-Id", out var userIdStr))
         {
-            // Retorna um erro se o cabeçalho essencial não for fornecido.
-            throw new NotFoundException("Usuário ausente ou inválido.");
-        }
-
-        var user = await userService.GetUserByIdAsync(userId);
-
-        if (user == null)
-        {
-            // Retorna um erro se o usuário não estiver cadastrado.
-            throw new NotFoundException("Usuário não cadastrado.");
-        }
-
-        return user;
-    }
-
-    public static async Task<UserDto?> CheckManager(HttpRequest request, IUserService userService)
-    {
-        // Verificação do usuário
-        var user = await ControllerHelper.CheckUser(request, userService);
-
-        if (user != null)
-        {
-            if (user.Role != "Manager")
+            if (Guid.TryParse(userIdStr, out var userId))
             {
-                // Retorna HTTP 403 Forbidden
-                throw new ForbiddenAccessException("Você não tem permissão para acessar este relatório.");
+                return userId;
             }
         }
 
-        return user;
+        return Guid.Empty; 
     }
 
     public static int GetStatusCode(Exception exception)

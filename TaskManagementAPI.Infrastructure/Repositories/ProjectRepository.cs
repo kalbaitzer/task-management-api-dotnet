@@ -3,6 +3,9 @@ using TaskManagementAPI.Application.Interfaces.Repositories;
 using TaskManagementAPI.Core.Entities;
 using TaskManagementAPI.Infrastructure.Data;
 
+// Mapeamentos para evitar conflitos entre classes com mesmo nome
+using Task = System.Threading.Tasks.Task;
+
 namespace TaskManagementAPI.Infrastructure.Repositories;
 
 /// <summary>
@@ -20,7 +23,7 @@ public class ProjectRepository : IProjectRepository
     /// <summary>
     /// Adiciona um novo projeto ao contexto.
     /// </summary>
-    public async System.Threading.Tasks.Task AddAsync(Project project)
+    public async Task AddAsync(Project project)
     {
         await _context.Projects.AddAsync(project);
     }

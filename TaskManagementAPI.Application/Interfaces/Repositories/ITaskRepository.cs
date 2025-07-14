@@ -1,6 +1,7 @@
 using TaskManagementAPI.Core.Entities;
 
-// Usando um alias para a entidade Task para evitar conflito de nome com System.Threading.Tasks.Task
+// Mapeamentos para evitar conflitos entre classes com mesmo nome
+using Task = System.Threading.Tasks.Task;
 using TaskEntity = TaskManagementAPI.Core.Entities.Task;
 
 namespace TaskManagementAPI.Application.Interfaces.Repositories;
@@ -11,8 +12,6 @@ namespace TaskManagementAPI.Application.Interfaces.Repositories;
 /// </summary>
 public interface ITaskRepository
 {
-    // --- Métodos CRUD Básicos ---
-
     /// <summary>
     /// Busca uma única tarefa pelo seu ID.
     /// Usado para atualizações, deleções e visualização de detalhes.
@@ -34,7 +33,7 @@ public interface ITaskRepository
     /// Usado pelo TaskService no processo de criação.
     /// </summary>
     /// <param name="task">A entidade da tarefa a ser adicionada.</param>
-    System.Threading.Tasks.Task AddAsync(TaskEntity task);
+    Task AddAsync(TaskEntity task);
 
     /// <summary>
     /// Marca uma tarefa para remoção do banco de dados.
@@ -46,9 +45,6 @@ public interface ITaskRepository
     // Nota: A atualização é geralmente manuseada pelo Change Tracker do EF Core,
     // então um método Update() explícito muitas vezes não é necessário se você
     // busca a entidade, modifica e depois chama SaveChanges().
-
-
-    // --- Métodos de Negócio Específicos ---
 
     /// <summary>
     /// Verifica se um projeto contém tarefas ativas (Pendente ou Em Andamento).

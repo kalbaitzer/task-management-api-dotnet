@@ -3,6 +3,9 @@ using TaskManagementAPI.Application.Interfaces.Repositories;
 using TaskManagementAPI.Core.Entities;
 using TaskManagementAPI.Infrastructure.Data;
 
+// Mapeamentos para evitar conflitos entre classes com mesmo nome
+using Task = System.Threading.Tasks.Task;
+
 namespace TaskManagementAPI.Infrastructure.Repositories;
 
 /// <summary>
@@ -22,7 +25,7 @@ public class TaskHistoryRepository : ITaskHistoryRepository
     /// A persistência ocorre quando a Unidade de Trabalho salva as alterações.
     /// </summary>
     /// <param name="history">A entidade de histórico a ser adicionada.</param>
-    public async System.Threading.Tasks.Task AddAsync(TaskHistory history)
+    public async Task AddAsync(TaskHistory history)
     {
         await _context.TaskHistories.AddAsync(history);
     }

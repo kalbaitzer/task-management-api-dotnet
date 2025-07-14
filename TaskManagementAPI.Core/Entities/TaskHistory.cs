@@ -83,11 +83,25 @@ public class TaskHistory
         ChangeType = string.Empty;
     }
 
+    /// <summary>
+    /// Construtor ppúblico.
+    /// </summary>
+    public TaskHistory(string changeType, string fieldName, string oldValue, string newValue, string comment, Guid taskId, Guid userId)
+    {
+        ChangeType = changeType;
+        FieldName = fieldName;
+        OldValue = oldValue;
+        NewValue = newValue;
+        Comment = comment;
+        TaskId = taskId;
+        UserId = userId;
+    }
+
     // Construtores estáticos (Static Factory Methods) para criar registros de forma clara e segura
 
-    /// <summary>
-    /// Cria um registro de histórico para uma atualização de campo.
-    /// </summary>
+        /// <summary>
+        /// Cria um registro de histórico para uma atualização de campo.
+        /// </summary>
     public static TaskHistory ForUpdate(Guid taskId, Guid userId, string fieldName, string? oldValue, string? newValue)
     {
         return new TaskHistory

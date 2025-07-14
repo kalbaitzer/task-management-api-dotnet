@@ -30,7 +30,7 @@ A API implementa as seguintes regras de negócio:
 
 ## Tecnologias Utilizadas
 
-- **Backend**: .NET 9, ASP.NET Core
+- **Backend**: .NET 9, ASP.NET Core 9
 - **Persistência de Dados**: Entity Framework Core 9
 - **Banco de Dados**: PostgreSQL 16
 - **Arquitetura**: Clean Architecture
@@ -205,6 +205,8 @@ Esta é a maneira mais simples e recomendada de executar toda a aplicação.
       ```bash
          docker-compose up -d
       ```
+
+      É importante que o [Docker Desktop](https://www.docker.com/products/docker-desktop/) esteja instalado e em execução neste computador onde a imagem do contêiner será executada.
 ---
 
 ## Documentação da API (Endpoints)

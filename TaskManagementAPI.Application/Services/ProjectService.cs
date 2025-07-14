@@ -2,20 +2,26 @@ using TaskManagementAPI.Application.DTOs;
 using TaskManagementAPI.Application.Exceptions;
 using TaskManagementAPI.Application.Interfaces;
 using TaskManagementAPI.Application.Interfaces.Repositories;
+using TaskManagementAPI.Application.Services.Utils;
 using TaskManagementAPI.Core.Entities;
+
+// Mapeamentos para evitar conflitos entre classes com mesmo nome
+using Task = System.Threading.Tasks.Task;
 
 namespace TaskManagementAPI.Application.Services;
 
 public class ProjectService : IProjectService
 {
     private readonly IProjectRepository _projectRepository;
-    private readonly ITaskRepository _taskRepository; // Dependência crucial para a Regra de Negócio 2
+    private readonly ITaskRepository _taskRepository;
+    private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public ProjectService(IProjectRepository projectRepository, ITaskRepository taskRepository, IUnitOfWork unitOfWork)
+    public ProjectService(IProjectRepository projectRepository, ITaskRepository taskRepository, IUserRepository userRepository, IUnitOfWork unitOfWork)
     {
         _projectRepository = projectRepository;
         _taskRepository = taskRepository;
+        _userRepository = userRepository;
         _unitOfWork = unitOfWork;
     }
 
@@ -24,6 +30,9 @@ public class ProjectService : IProjectService
     /// </summary>
     public async Task<ProjectDetailDto> CreateProjectAsync(CreateProjectDto projectDto, Guid userId)
     {
+        // Verifica se o usuário existe
+        await ServiceHelper.CheckUser(userId, _userRepository);
+
         var project = new Project
         {
             Name = projectDto.Name,
@@ -52,6 +61,9 @@ public class ProjectService : IProjectService
     /// </summary>
     public async Task<IEnumerable<ProjectDto>> GetUserProjectsAsync(Guid userId)
     {
+        // Verifica se o usuário existe
+        await ServiceHelper.CheckUser(userId, _userRepository);
+
         var projects = await _projectRepository.GetByOwnerIdAsync(userId);
 
         // Mapeia a lista de entidades para uma lista de DTOs de resumo
@@ -68,6 +80,9 @@ public class ProjectService : IProjectService
     /// </summary>
     public async Task<ProjectDetailDto?> GetProjectByIdAsync(Guid projectId, Guid userId)
     {
+        // Verifica se o usuário existe
+        await ServiceHelper.CheckUser(userId, _userRepository);
+
         var project = await _projectRepository.GetByIdWithTasksAsync(projectId);
 
         if (project == null)
@@ -101,8 +116,11 @@ public class ProjectService : IProjectService
     /// <summary>
     /// Remove um projeto, aplicando a regra de negócio de restrição de remoção.
     /// </summary>
-    public async System.Threading.Tasks.Task DeleteProjectAsync(Guid projectId, Guid userId)
+    public async Task DeleteProjectAsync(Guid projectId, Guid userId)
     {
+        // Verifica se o usuário existe
+        await ServiceHelper.CheckUser(userId, _userRepository);
+
         // Valida se o projeto existe e se o usuário é o proprietário
         var project = await _projectRepository.GetByIdAsync(projectId);
 

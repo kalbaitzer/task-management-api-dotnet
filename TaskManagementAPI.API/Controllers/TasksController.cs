@@ -40,18 +40,15 @@ public class TasksController : ControllerBase
     {
         try
         {
-            // Verificação do usuário
-            var user = await ControllerHelper.CheckUser(Request,_userService);
+            // Obtém o Id do usuário no cabeçalho do Request: X-User-Id
+            var userId = ControllerHelper.GetUserId(Request);
 
-            if (user != null)
+            var newTask = await _taskService.CreateTaskAsync(projectId, createTaskDto, userId);
+
+            if (newTask != null)
             {
-                var newTask = await _taskService.CreateTaskAsync(projectId, createTaskDto, user.Id);
-
-                if (newTask != null)
-                {
-                    // Retorna a nova tarefa criada
-                    return CreatedAtAction(nameof(GetTaskById), new { taskId = newTask.Id }, newTask);
-                }
+                // Retorna a nova tarefa criada
+                return CreatedAtAction(nameof(GetTaskById), new { taskId = newTask.Id }, newTask);
             }
         }
         catch (Exception e)
@@ -76,15 +73,12 @@ public class TasksController : ControllerBase
     {
         try
         {
-            // Verificação do usuário
-            var user = await ControllerHelper.CheckUser(Request,_userService);
+            // Obtém o Id do usuário no cabeçalho do Request: X-User-Id
+            var userId = ControllerHelper.GetUserId(Request);
 
-            if (user != null)
-            {
-                var tasks = await _taskService.GetTasksByProjectAsync(projectId, user.Id);
+            var tasks = await _taskService.GetTasksByProjectAsync(projectId, userId);
 
-                if (tasks != null) return Ok(tasks);
-            }
+            if (tasks != null) return Ok(tasks);
         }
         catch (Exception e)
         {
@@ -108,15 +102,12 @@ public class TasksController : ControllerBase
     {
         try
         {
-            // Verificação do usuário
-            var user = await ControllerHelper.CheckUser(Request,_userService);
+            // Obtém o Id do usuário no cabeçalho do Request: X-User-Id
+            var userId = ControllerHelper.GetUserId(Request);
 
-            if (user != null)
-            {
-                var task = await _taskService.GetTaskByIdAsync(taskId, user.Id);
+            var task = await _taskService.GetTaskByIdAsync(taskId, userId);
 
-                if (task != null) return Ok(task);
-            }
+            if (task != null) return Ok(task);
         }
         catch (Exception e)
         {
@@ -141,13 +132,10 @@ public class TasksController : ControllerBase
     {
         try
         {
-            // Verificação do usuário
-            var user = await ControllerHelper.CheckUser(Request,_userService);
+            // Obtém o Id do usuário no cabeçalho do Request: X-User-Id
+            var userId = ControllerHelper.GetUserId(Request);
 
-            if (user != null)
-            {
-                await _taskService.UpdateTaskAsync(taskId, updateTaskDto, user.Id);
-            }
+            await _taskService.UpdateTaskDetailsAsync(taskId, updateTaskDto, userId);
         }
         catch (Exception e)
         {
@@ -172,13 +160,10 @@ public class TasksController : ControllerBase
     {
         try
         {
-            // Verificação do usuário
-            var user = await ControllerHelper.CheckUser(Request,_userService);
+            // Obtém o Id do usuário no cabeçalho do Request: X-User-Id
+            var userId = ControllerHelper.GetUserId(Request);
 
-            if (user != null)
-            {
-                await _taskService.UpdateTaskStatusAsync(taskId, statusDto, user.Id);
-            }
+            await _taskService.UpdateTaskStatusAsync(taskId, statusDto, userId);
         }
         catch (Exception e)
         {
@@ -203,13 +188,10 @@ public class TasksController : ControllerBase
     {
         try
         {
-            // Verificação do usuário
-            var user = await ControllerHelper.CheckUser(Request,_userService);
+            // Obtém o Id do usuário no cabeçalho do Request: X-User-Id
+            var userId = ControllerHelper.GetUserId(Request);
 
-            if (user != null)
-            {
-                await _taskService.AddCommentAsync(taskId, commentDto, user.Id);
-            }
+            await _taskService.AddCommentAsync(taskId, commentDto, userId);
         }
         catch (Exception e)
         {
@@ -233,13 +215,10 @@ public class TasksController : ControllerBase
     {
         try
         {
-            // Verificação do usuário
-            var user = await ControllerHelper.CheckUser(Request,_userService);
+            // Obtém o Id do usuário no cabeçalho do Request: X-User-Id
+            var userId = ControllerHelper.GetUserId(Request);
 
-            if (user != null)
-            {
-                await _taskService.DeleteTaskAsync(taskId,user.Id);
-            }
+            await _taskService.DeleteTaskAsync(taskId,userId);
         }
         catch (Exception e)
         {
@@ -264,15 +243,12 @@ public class TasksController : ControllerBase
     {
         try
         {
-            // Verificação do usuário
-            var user = await ControllerHelper.CheckUser(Request,_userService);
+            // Obtém o Id do usuário no cabeçalho do Request: X-User-Id
+            var userId = ControllerHelper.GetUserId(Request);
 
-            if (user != null)
-            {
-                var history = await _taskService.GetTaskHistoryAsync(taskId, user.Id);
+            var history = await _taskService.GetTaskHistoryAsync(taskId, userId);
 
-                if (history != null) return Ok(history);
-            }
+            if (history != null) return Ok(history);
         }
         catch (Exception e)
         {

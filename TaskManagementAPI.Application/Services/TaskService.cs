@@ -1,12 +1,13 @@
 using TaskManagementAPI.Application.DTOs;
+using TaskManagementAPI.Application.Exceptions;
 using TaskManagementAPI.Application.Interfaces;
 using TaskManagementAPI.Application.Interfaces.Repositories;
+using TaskManagementAPI.Application.Services.Utils;
 using TaskManagementAPI.Core.Entities;
-using TaskManagementAPI.Application.Exceptions;
 
-// Renomeando para evitar conflito com a classe System.Threading.Tasks.Task
+// Mapeamentos para evitar conflitos entre classes com mesmo nome
+using Task = System.Threading.Tasks.Task;
 using TaskEntity = TaskManagementAPI.Core.Entities.Task;
-using Microsoft.Win32.SafeHandles;
 
 namespace TaskManagementAPI.Application.Services;
 
@@ -15,6 +16,7 @@ public class TaskService : ITaskService
     private readonly ITaskRepository _taskRepository;
     private readonly IProjectRepository _projectRepository;
     private readonly ITaskHistoryRepository _taskHistoryRepository;
+    private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
 
     // Injeção de Dependência dos repositórios e da Unidade de Trabalho
@@ -22,11 +24,13 @@ public class TaskService : ITaskService
         ITaskRepository taskRepository,
         IProjectRepository projectRepository,
         ITaskHistoryRepository taskHistoryRepository,
+        IUserRepository userRepository,
         IUnitOfWork unitOfWork)
     {
         _taskRepository = taskRepository;
         _projectRepository = projectRepository;
         _taskHistoryRepository = taskHistoryRepository;
+        _userRepository = userRepository;
         _unitOfWork = unitOfWork;
     }
 
@@ -35,19 +39,16 @@ public class TaskService : ITaskService
     /// </summary>
     public async Task<TaskDto> CreateTaskAsync(Guid projectId, CreateTaskDto taskDto, Guid userId)
     {
-        // Valida se o projeto existe
-        var project = await _projectRepository.GetByIdWithTasksAsync(projectId);
+        // Verifica se o usuário existe
+        await ServiceHelper.CheckUser(userId, _userRepository);
 
-        if (project == null)
-        {
-            // Lança uma exceção de projeto não encontrado
-            throw new NotFoundException("Projeto não encontrado.");
-        }
+        // Verfica se o projeto existe
+        var project = await ServiceHelper.CheckProject(projectId, _projectRepository);
 
         // Regra de Negócio 4: Limite de tarefas por projeto
-        if (project.Tasks.Count >= 20)
+        if (project != null && project.Tasks.Count >= 20)
         {
-            // Lança uma exceção de regrade negócio
+            // Lança uma exceção de regra de negócio
             throw new BusinessRuleException("Limite de 20 tarefas por projeto foi atingido.");
         }
 
@@ -79,8 +80,11 @@ public class TaskService : ITaskService
 
     public async Task<IEnumerable<TaskDto>> GetTasksByProjectAsync(Guid projectId, Guid userId)
     {
-        // Valida se o projeto existe e se pertence ao usuário
-        var project = await CheckProject(projectId,userId);
+        // Verifica se o usuário existe
+        await ServiceHelper.CheckUser(userId, _userRepository);
+
+        // Verifica se o projeto existe
+        await ServiceHelper.CheckProject(projectId, _projectRepository);
 
         var tasks = await _taskRepository.GetByProjectIdAsync(projectId);
 
@@ -101,13 +105,13 @@ public class TaskService : ITaskService
 
     public async Task<TaskDto?> GetTaskByIdAsync(Guid taskId, Guid userId)
     {
-        // Verificação da tarefa
-        var task = await CheckTask(taskId);
+        // Verifica se o usuário existe
+        await ServiceHelper.CheckUser(userId, _userRepository);
+
+        // Verifica se a tarefa existe
+        var task = await ServiceHelper.CheckTask(taskId, _taskRepository);
 
         if (task == null) return null;
-
-        // Valida se o projeto existe e se pertence ao usuário
-        await CheckProject(task.ProjectId,userId);
 
         // Mapeamento da entidade para TaskDto
         return new TaskDto
@@ -127,15 +131,15 @@ public class TaskService : ITaskService
     /// <summary>
     /// Atualiza os detalhes de uma tarefa, registrando o histórico.
     /// </summary>
-    public async System.Threading.Tasks.Task UpdateTaskAsync(Guid taskId, UpdateTaskDto taskDto, Guid userId)
+    public async Task UpdateTaskDetailsAsync(Guid taskId, UpdateTaskDto taskDto, Guid userId)
     {
-        // Verificação da tarefa
-        var task = await CheckTask(taskId);
+        // Verifica se o usuário existe
+        await ServiceHelper.CheckUser(userId, _userRepository);
+
+        // Verifica se a tarefa existe
+        var task = await ServiceHelper.CheckTask(taskId, _taskRepository);
 
         if (task == null) return;
-
-        // Valida se o projeto existe e se pertence ao usuário
-        await CheckProject(task.ProjectId,userId);
 
         // Regra de Negócio 3: Registrar histórico de alterações
 
@@ -177,15 +181,15 @@ public class TaskService : ITaskService
     /// <summary>
     /// Atualiza apenas o status de uma tarefa.
     /// </summary>
-    public async System.Threading.Tasks.Task UpdateTaskStatusAsync(Guid taskId, UpdateStatusDto statusDto, Guid userId)
+    public async Task UpdateTaskStatusAsync(Guid taskId, UpdateStatusDto statusDto, Guid userId)
     {
-        // Verificação da tarefa
-        var task = await CheckTask(taskId);
+        // Verifica se o usuário existe
+        await ServiceHelper.CheckUser(userId, _userRepository);
+
+        // Verifica se a tarefa existe
+        var task = await ServiceHelper.CheckTask(taskId, _taskRepository);
 
         if (task == null) return;
-
-        // Valida se o projeto existe e se pertence ao usuário
-        await CheckProject(task.ProjectId,userId);
 
         string oldStatus = task.Status.ToString();
         string newStatus = statusDto.Status.ToString();
@@ -209,15 +213,15 @@ public class TaskService : ITaskService
     /// <summary>
     /// Adiciona um comentário a uma tarefa.
     /// </summary>
-    public async System.Threading.Tasks.Task AddCommentAsync(Guid taskId, AddCommentDto commentDto, Guid userId)
+    public async Task AddCommentAsync(Guid taskId, AddCommentDto commentDto, Guid userId)
     {
-        // Verificação da tarefa
-        var task = await CheckTask(taskId);
+        // Verifica se o usuário existe
+        await ServiceHelper.CheckUser(userId, _userRepository);
+
+        // Verifica se a tarefa existe
+        var task = await ServiceHelper.CheckTask(taskId, _taskRepository);
 
         if (task == null) return;
-
-        // Valida se o projeto existe e se pertence ao usuário
-        await CheckProject(task.ProjectId,userId);
 
         // Regra de Negócio 6: Cria o registro de histórico para o comentário
         var history = TaskHistory.ForComment(taskId, userId, commentDto.Comment);
@@ -228,15 +232,15 @@ public class TaskService : ITaskService
         await _unitOfWork.SaveChangesAsync();
     }
 
-    public async System.Threading.Tasks.Task DeleteTaskAsync(Guid taskId, Guid userId)
+    public async Task DeleteTaskAsync(Guid taskId, Guid userId)
     {
-        // Verificação da tarefa
-        var task = await CheckTask(taskId);
+        // Verifica se o usuário existe
+        await ServiceHelper.CheckUser(userId, _userRepository);
+
+        // Verifica se a tarefa existe
+        var task = await ServiceHelper.CheckTask(taskId, _taskRepository);
 
         if (task == null) return;
-
-        // Valida se o projeto existe e se pertence ao usuário
-        await CheckProject(task.ProjectId,userId);
 
         if (task != null)
         {
@@ -255,13 +259,13 @@ public class TaskService : ITaskService
     /// <returns>Uma coleção de registros de histórico.</returns>
     public async Task<IEnumerable<TaskHistoryDto>> GetTaskHistoryAsync(Guid taskId, Guid userId)
     {
-        // Verificação da tarefa
-        var task = await CheckTask(taskId);
+        // Verifica se o usuário existe
+        await ServiceHelper.CheckUser(userId, _userRepository);
+
+        // Verifica se a tarefa existe
+        var task = await ServiceHelper.CheckTask(taskId, _taskRepository);
 
         if (task == null) return new List<TaskHistoryDto>();
-
-        // Valida se o projeto existe e se pertence ao usuário
-        await CheckProject(task.ProjectId, userId);
 
         var taskHistory = await _taskHistoryRepository.GetByTaskIdAsync(taskId);
 
@@ -277,32 +281,5 @@ public class TaskService : ITaskService
             Timestamp = h.Timestamp,
             UserId = h.UserId
         }).ToList();
-    }
-
-    private async Task<TaskEntity?> CheckTask(Guid taskId)
-    {
-        var task = await _taskRepository.GetByIdAsync(taskId);
-
-        if (task == null)
-        {
-            // Lança uma exceção de tarefa não encontrada
-            throw new NotFoundException("Tarefa não encontrada.");
-        }
-
-        return task;
-    }
-
-    private async Task<Project?> CheckProject(Guid projectId, Guid userId)
-    {
-        // Valida se o projeto existe
-        var project = await _projectRepository.GetByIdWithTasksAsync(projectId);
-
-        if (project == null)
-        {
-            // Lança uma exceção de projeto não encontrado
-            throw new NotFoundException("Projeto não encontrado.");
-        }
-
-        return project;
     }
 }

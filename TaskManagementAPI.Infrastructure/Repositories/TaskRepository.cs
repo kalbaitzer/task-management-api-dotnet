@@ -4,6 +4,7 @@ using TaskManagementAPI.Core.Entities;
 using TaskManagementAPI.Infrastructure.Data;
 
 // Usando o alias para a entidade Task
+using Task = System.Threading.Tasks.Task;
 using TaskEntity = TaskManagementAPI.Core.Entities.Task;
 
 namespace TaskManagementAPI.Infrastructure.Repositories;
@@ -27,7 +28,7 @@ public class TaskRepository : ITaskRepository
     /// <summary>
     /// Adiciona uma nova tarefa ao contexto. A persistência ocorre ao chamar SaveChangesAsync.
     /// </summary>
-    public async System.Threading.Tasks.Task AddAsync(TaskEntity task)
+    public async Task AddAsync(TaskEntity task)
     {
         await _context.Tasks.AddAsync(task);
     }

@@ -8,6 +8,8 @@ COPY ["TaskManagementAPI.API/TaskManagementAPI.API.csproj", "TaskManagementAPI.A
 COPY ["TaskManagementAPI.Application/TaskManagementAPI.Application.csproj", "TaskManagementAPI.Application/"]
 COPY ["TaskManagementAPI.Core/TaskManagementAPI.Core.csproj", "TaskManagementAPI.Core/"]
 COPY ["TaskManagementAPI.Infrastructure/TaskManagementAPI.Infrastructure.csproj", "TaskManagementAPI.Infrastructure/"]
+COPY ["TaskManagementAPI.Application.Tests/TaskManagementAPI.Application.Tests.csproj", "TaskManagementAPI.Application.Tests/"] 
+#
 COPY ["TaskManagementAPI.sln", "."]
 
 # Restaura as dependências NuGet (isso é feito antes para aproveitar o cache do Docker)

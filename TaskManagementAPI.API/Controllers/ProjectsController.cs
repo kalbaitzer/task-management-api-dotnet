@@ -37,18 +37,15 @@ public class ProjectsController : ControllerBase
     {
         try
         {
-            // Verificação do usuário
-            var user = await ControllerHelper.CheckUser(Request,_userService);
+            // Obtém o Id do usuário no cabeçalho do Request: X-User-Id
+            var userId = ControllerHelper.GetUserId(Request);
 
-            if (user != null)
+            var newProject = await _projectService.CreateProjectAsync(projectDto, userId);
+
+            if (newProject != null)
             {
-                var newProject = await _projectService.CreateProjectAsync(projectDto, user.Id);
-
-                if (newProject != null)
-                {
-                    // Retorna o novo projeto criado
-                    return CreatedAtAction(nameof(GetProjectById), new { projectId = newProject.Id }, newProject);
-                }
+                // Retorna o novo projeto criado
+                return CreatedAtAction(nameof(GetProjectById), new { projectId = newProject.Id }, newProject);
             }
         }
         catch (Exception e)
@@ -73,15 +70,12 @@ public class ProjectsController : ControllerBase
     {
         try
         {
-            // Verificação do usuário
-            var user = await ControllerHelper.CheckUser(Request,_userService);
+            // Obtém o Id do usuário no cabeçalho do Request: X-User-Id
+            var userId = ControllerHelper.GetUserId(Request);
 
-            if (user != null)
-            {
-                var projects = await _projectService.GetUserProjectsAsync(user.Id);
+            var projects = await _projectService.GetUserProjectsAsync(userId);
 
-                if (projects != null) return Ok(projects);
-            }
+            if (projects != null) return Ok(projects);
         }
         catch (Exception e)
         {
@@ -106,15 +100,12 @@ public class ProjectsController : ControllerBase
     {
         try
         {
-            // Verificação do usuário
-            var user = await ControllerHelper.CheckUser(Request,_userService);
+            // Obtém o Id do usuário no cabeçalho do Request: X-User-Id
+            var userId = ControllerHelper.GetUserId(Request);
 
-            if (user != null)
-            {
-                var project = await _projectService.GetProjectByIdAsync(projectId, user.Id);
+            var project = await _projectService.GetProjectByIdAsync(projectId, userId);
 
-                if (project != null) return Ok(project);
-            }
+            if (project != null) return Ok(project);
         }
         catch (Exception e)
         {
@@ -139,13 +130,10 @@ public class ProjectsController : ControllerBase
     {
         try
         {
-            // Verificação do usuário
-            var user = await ControllerHelper.CheckUser(Request,_userService);
+            // Obtém o Id do usuário no cabeçalho do Request: X-User-Id
+            var userId = ControllerHelper.GetUserId(Request);
 
-            if (user != null)
-            {
-                await _projectService.DeleteProjectAsync(projectId, user.Id);
-            }
+            await _projectService.DeleteProjectAsync(projectId, userId);
         }
         catch (Exception e)
         {

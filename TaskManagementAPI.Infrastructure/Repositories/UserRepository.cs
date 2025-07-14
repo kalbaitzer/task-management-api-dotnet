@@ -3,6 +3,9 @@ using TaskManagementAPI.Application.Interfaces.Repositories;
 using TaskManagementAPI.Core.Entities;
 using TaskManagementAPI.Infrastructure.Data;
 
+// Mapeamentos para evitar conflitos entre classes com mesmo nome
+using Task = System.Threading.Tasks.Task;
+
 namespace TaskManagementAPI.Infrastructure.Repositories;
 
 /// <summary>
@@ -22,7 +25,7 @@ public class UserRepository : IUserRepository
     /// A persistência real ocorre quando SaveChangesAsync é chamado na Unidade de Trabalho.
     /// </summary>
     /// <param name="user">A entidade User a ser adicionada.</param>
-    public async System.Threading.Tasks.Task AddAsync(User user)
+    public async Task AddAsync(User user)
     {
         await _context.Users.AddAsync(user);
     }

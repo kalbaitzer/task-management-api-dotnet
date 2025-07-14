@@ -4,6 +4,9 @@ using TaskManagementAPI.Application.Interfaces;
 using TaskManagementAPI.Application.Interfaces.Repositories;
 using TaskManagementAPI.Core.Entities;
 
+// Mapeamentos para evitar conflitos entre classes com mesmo nome
+using Task = System.Threading.Tasks.Task;
+
 namespace TaskManagementAPI.Application.Services;
 
 /// <summary>
@@ -87,9 +90,9 @@ public class UserService : IUserService
     }
 
     /// <summary>
-    /// Remove um usuário.
+    /// Remove um usuário cadastrado.
     /// </summary>
-    public async System.Threading.Tasks.Task DeleteUserAsync(Guid userId)
+    public async Task DeleteUserAsync(Guid userId)
     {
         // Valida se o usuário existe
         var user = await _userRepository.GetByIdAsync(userId);

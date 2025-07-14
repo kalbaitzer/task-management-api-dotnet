@@ -1,5 +1,8 @@
 using TaskManagementAPI.Core.Entities;
 
+// Mapeamentos para evitar conflitos entre classes com mesmo nome
+using Task = System.Threading.Tasks.Task;
+
 namespace TaskManagementAPI.Application.Interfaces.Repositories;
 
 /// <summary>
@@ -8,8 +11,6 @@ namespace TaskManagementAPI.Application.Interfaces.Repositories;
 /// </summary>
 public interface IProjectRepository
 {
-    // --- Métodos de Busca ---
-
     /// <summary>
     /// Busca um projeto pelo seu ID, sem incluir dados relacionados como tarefas.
     /// Útil para operações leves como verificações de existência ou deleção.
@@ -34,14 +35,11 @@ public interface IProjectRepository
     /// <returns>Uma coleção de projetos do usuário.</returns>
     Task<IEnumerable<Project>> GetByOwnerIdAsync(Guid ownerId);
 
-
-    // --- Métodos de Escrita ---
-
     /// <summary>
     /// Adiciona um novo projeto ao contexto do banco de dados.
     /// </summary>
     /// <param name="project">A entidade do projeto a ser adicionada.</param>
-    System.Threading.Tasks.Task AddAsync(Project project);
+    Task AddAsync(Project project);
 
     /// <summary>
     /// Marca um projeto para remoção do banco de dados.

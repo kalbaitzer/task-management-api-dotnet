@@ -1,5 +1,8 @@
 using TaskManagementAPI.Core.Entities;
 
+// Mapeamentos para evitar conflitos entre classes com mesmo nome
+using Task = System.Threading.Tasks.Task;
+
 namespace TaskManagementAPI.Application.Interfaces.Repositories;
 
 /// <summary>
@@ -25,5 +28,5 @@ public interface ITaskHistoryRepository
     /// (criação, atualização, comentário) em uma tarefa.
     /// </summary>
     /// <param name="history">A entidade de histórico a ser adicionada.</param>
-    System.Threading.Tasks.Task AddAsync(TaskHistory history);
+    Task AddAsync(TaskHistory history);
 }

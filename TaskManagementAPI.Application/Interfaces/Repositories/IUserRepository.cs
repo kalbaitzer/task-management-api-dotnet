@@ -1,5 +1,8 @@
 using TaskManagementAPI.Core.Entities;
 
+// Mapeamentos para evitar conflitos entre classes com mesmo nome
+using Task = System.Threading.Tasks.Task;
+
 namespace TaskManagementAPI.Application.Interfaces.Repositories;
 
 /// <summary>
@@ -14,7 +17,7 @@ public interface IUserRepository
     /// Usado pelo UserService no processo de registro de um novo usuário.
     /// </summary>
     /// <param name="user">A entidade User a ser adicionada.</param>
-    System.Threading.Tasks.Task AddAsync(User user);
+    Task AddAsync(User user);
 
     /// <summary>
     /// Busca todos os usuários cadastrados.

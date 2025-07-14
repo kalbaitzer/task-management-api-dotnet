@@ -26,10 +26,10 @@ public class ReportsController : ControllerBase
     {
         try
         {
-            // Verificação de permissão, se é gerente
-            await ControllerHelper.CheckManager(Request,_userService);
+            // Obtém o Id do usuário no cabeçalho do Request: X-User-Id
+            var userId = ControllerHelper.GetUserId(Request);
 
-            var report = await _reportService.GenerateAverageCompletedTasksReportAsync();
+            var report = await _reportService.GenerateAverageCompletedTasksReportAsync(userId);
 
             if (report != null) return Ok(report);
         }

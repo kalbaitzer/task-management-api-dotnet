@@ -1,5 +1,8 @@
 using TaskManagementAPI.Application.DTOs;
 
+// Mapeamentos para evitar conflitos entre classes com mesmo nome
+using Task = System.Threading.Tasks.Task;
+
 namespace TaskManagementAPI.Application.Interfaces;
 
 /// <summary>
@@ -31,5 +34,5 @@ public interface IUserService
     /// Marca um usuário para deleção.
     /// <param name="userId">O ID do usuário a ser removido.</param>
     /// </summary>
-    System.Threading.Tasks.Task DeleteUserAsync(Guid userId);
+    Task DeleteUserAsync(Guid userId);
 }

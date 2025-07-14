@@ -108,9 +108,6 @@ public class Task
 
         Status = TaskStatus.Pendente; // Status inicial padrão
         CreatedAt = DateTime.UtcNow;
-
-        // Validação de regras de negócio complexas pode ser feita aqui.
-        // Ex: if (dueDate < DateTime.UtcNow.Date) throw new ArgumentException("A data de vencimento não pode ser no passado.");
     }
 
     // Métodos públicos para alterar o estado da tarefa de forma controlada
