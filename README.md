@@ -282,19 +282,19 @@ Isso introduz uma estrutura hierárquica (árvore) no nosso modelo de dados, o q
 Isso ajuda a decidir se precisamos de um serviço de armazenamento de objetos como `Amazon S3` ou `Azure Blob Storage` e como isso impacta a nossa arquitetura e custos.
 
 - **Como funciona o convite e o compartilhamento de um projeto? Um usuário pode convidar outro para um projeto com diferentes níveis de permissão (ex: apenas 'visualizar' vs. 'editar')?**
-Isso vai muito além do nosso sistema simples de Role (`User`, `Manager`) e sugere a necessidade de uma lista de controle de acesso `(ACL)` por projeto, o que é um grande incremento na complexidade da autorização.
+Isso vai muito além do nosso sistema simples de Role (`User`, `Manager`) e sugere a necessidade de uma lista de controle de acesso (`ACL`) por projeto, o que é um grande incremento na complexidade da autorização.
 
 ### 2. Notificações e Engajamento
 Como mantemos os usuários informados e engajados?
 
 - **Quando e como um usuário deve ser notificado? (Ex: quando uma tarefa é atribuída a ele, quando o status muda, quando uma data de vencimento se aproxima?)**
-Define a necessidade de um sistema de notificações, que pode envolver serviços de e-mail `(SendGrid)`, push notifications `(Firebase)` e/ou a criação de uma fila de mensagens `(RabbitMQ, SQS)` para processar esses eventos de forma assíncrona.
+Define a necessidade de um sistema de notificações, que pode envolver serviços de e-mail (`SendGrid`), push notifications (`Firebase`) e/ou a criação de uma fila de mensagens (`RabbitMQ`, `SQS`) para processar esses eventos de forma assíncrona.
 
 ### 3. Dados, Relatórios e Inteligência
 Já temos um relatório básico. O que mais podemos fazer com os dados?
 
 - **Além da média de tarefas, que outras métricas ou KPIs (Key Performance Indicators) são importantes para um 'Gerente' visualizar num dashboard?**
-Ajuda a projetar o futuro do módulo de relatórios. Pode indicar a necessidade de visualizações de dados mais complexas, gráficos, ou até mesmo um serviço de BI `(Business Intelligence)`.
+Ajuda a projetar o futuro do módulo de relatórios. Pode indicar a necessidade de visualizações de dados mais complexas, gráficos, ou até mesmo um serviço de BI (`Business Intelligence`).
 
 - **Precisaremos exportar dados de projetos ou relatórios para formatos como CSV ou PDF?**
 A geração de arquivos pode ser uma operação demorada. Isso pode exigir a implementação de `background jobs` (tarefas em segundo plano) com ferramentas como Hangfire ou `Quartz.NET` para não bloquear a API.
@@ -317,62 +317,60 @@ O objetivo aqui é melhorar a manutenibilidade e a clareza do código à medida 
 
 - **Implementar o Padrão CQRS (Command Query Responsibility Segregation):**
 
-   - O que é? Atualmente, nossos Services fazem tudo: leem dados, validam, e escrevem dados. CQRS sugere separar as operações de escrita (Commands) das operações de leitura (Queries).
+   - Atualmente, nossos Services fazem tudo: leem dados, validam, e escrevem dados. `CQRS` sugere separar as operações de escrita (`Commands`) das operações de leitura (`Queries`).
 
-   - Por que melhorar? O modelo que você precisa para criar ou atualizar uma tarefa (com validações, entidades ricas) é muito diferente do modelo que você precisa para simplesmente listar tarefas (um DTO "achatado" e otimizado para leitura). Separar isso simplifica radicalmente a lógica.
+   - O modelo que você precisa para criar ou atualizar uma tarefa (com validações, entidades ricas) é muito diferente do modelo que você precisa para simplesmente listar tarefas (um DTO "achatado" e otimizado para leitura). Separar isso simplifica radicalmente a lógica.
 
-   - Como implementar? Usando uma biblioteca como a MediatR, que é quase um padrão de facto em projetos .NET modernos para implementar `CQRS` e outros padrões de mensageria interna.
+   - Usando uma biblioteca como a MediatR, que é quase um padrão de facto em projetos .NET modernos para implementar `CQRS` e outros padrões de mensageria interna.
 
 - **Automatizar o Mapeamento de Objetos com AutoMapper:**
 
-   - O que é? No momento, nós mapeamos manualmente as entidades para DTOs nos nossos serviços (ex: new TaskDto { Id = taskEntity.Id, ... }).
+   - No momento, nós mapeamos manualmente as entidades para DTOs nos nossos serviços (ex: new TaskDto { Id = taskEntity.Id, ... }).
 
-   - Por que melhorar? Isso é repetitivo e propenso a erros. Se você adicionar um campo na entidade e no DTO, pode se esquecer de adicioná-lo no mapeamento. O AutoMapper é uma biblioteca que automatiza essa conversão com base em convenções.
+   - Isso é repetitivo e propenso a erros. Se você adicionar um campo na entidade e no DTO, pode se esquecer de adicioná-lo no mapeamento. O `AutoMapper` é uma biblioteca que automatiza essa conversão com base em convenções.
 
-   - Como implementar? Você define "perfis" de mapeamento uma vez (ex: "mapeie TaskEntity para TaskDto") e depois, no serviço, o código se resume a uma única linha: _mapper.Map<TaskDto>(taskEntity).
+   - Você define "perfis" de mapeamento uma vez (ex: "mapeie TaskEntity para TaskDto") e depois, no serviço, o código se resume a uma única linha: _mapper.Map<TaskDto>(taskEntity).
 
 - **Validação Avançada com FluentValidation:**
 
-   - O que é? Usamos `Data Annotations` (`[Required]`, `[MaxLength]`) nos nossos DTOs, o que é bom. O FluentValidation é uma biblioteca que leva a validação para o próximo nível.
+   - Usamos `Data Annotations` (`[Required]`, `[MaxLength]`) nos nossos DTOs, o que é bom. O FluentValidation é uma biblioteca que leva a validação para o próximo nível.
 
-   - Por que melhorar? Ele permite criar regras de validação muito mais complexas e expressivas usando expressões lambda, desacoplando as regras de validação dos DTOs e tornando-as mais fáceis de testar unitariamente.
+   - Ele permite criar regras de validação muito mais complexas e expressivas usando expressões lambda, desacoplando as regras de validação dos DTOs e tornando-as mais fáceis de testar unitariamente.
 
 ### 2. Qualidade e Testes
 Já temos testes de unidade, o que é excelente. O próximo passo é garantir que as partes integradas funcionem.
 
 - **Implementar Testes de Integração:**
 
-   - O que é? São testes que verificam se as diferentes camadas da nossa aplicação funcionam juntas. O teste principal seria iniciar uma versão em memória da nossa API e fazer chamadas HTTP reais aos controllers.
+   - São testes que verificam se as diferentes camadas da nossa aplicação funcionam juntas. O teste principal seria iniciar uma versão em memória da nossa API e fazer chamadas HTTP reais aos controllers.
 
-   - Por que melhorar? Isso nos permite testar o fluxo completo: `Controller` -> `Service` -> `Repository` -> `Banco de Dados` (em memória ou um de teste). É a melhor forma de testar a autorização baseada em headers, o roteamento e a serialização JSON.
+   - Isso nos permite testar o fluxo completo: `Controller` -> `Service` -> `Repository` -> `Banco de Dados` (em memória ou um de teste). É a melhor forma de testar a autorização baseada em headers, o roteamento e a serialização JSON.
 
-   - Como implementar? Usando a classe `WebApplicationFactory` do `ASP.NET Core`, que é projetada especificamente para este fim.
+   - Usando a classe `WebApplicationFactory` do `ASP.NET Core`, que é projetada especificamente para este fim.
 
 ### 3. Performance e Escalabilidade
 À medida que o número de usuários e dados cresce, precisamos garantir que a API continue rápida.
 
 - **Implementar Paginação:**
 
-   - O que é? Atualmente, nossos endpoints GET que listam projetos ou tarefas retornam todos os registros de uma vez. Se um usuário tiver `10.000` tarefas, isso será inviável.
+   - Atualmente, nossos endpoints GET que listam projetos ou tarefas retornam todos os registros de uma vez. Se um usuário tiver `10.000` tarefas, isso será inviável.
 
-   - Por que melhorar? A paginação (ex: `GET /api/projects?page=1&pageSize=20`) é essencial para garantir que as respostas da API sejam rápidas e que não sobrecarreguem nem o servidor nem o cliente.
+   - A paginação (ex: `GET /api/projects?page=1&pageSize=20`) é essencial para garantir que as respostas da API sejam rápidas e que não sobrecarreguem nem o servidor nem o cliente.
 
 - **Implementar Estratégia de Cache:**
 
-   - O que é? Armazenar em memória resultados de requisições que são frequentes e cujos dados não mudam a todo instante.
+   - Armazenar em memória resultados de requisições que são frequentes e cujos dados não mudam a todo instante.
 
-   - Por que melhorar? Para dados que são muito lidos, como a lista de projetos de um usuário, o cache pode reduzir drasticamente o número de acessos ao banco de dados, melhorando a performance de forma impressionante.
+   - Para dados que são muito lidos, como a lista de projetos de um usuário, o cache pode reduzir drasticamente o número de acessos ao banco de dados, melhorando a performance de forma impressionante.
 
-   - Como implementar? Podemos começar com cache em memória (`IMemoryCache)` e, para um ambiente com múltiplas instâncias da API, evoluir para um cache distribuído com `Redis`.
+   - Podemos começar com cache em memória (`IMemoryCache`) e, para um ambiente com múltiplas instâncias da API, evoluir para um cache distribuído com `Redis`.
 
 ### 4. Infraestrutura e Deploy (Visão de Cloud)
 Nosso docker-compose é ótimo para desenvolvimento e para rodar em uma única máquina. Para um ambiente de produção real na nuvem (`AWS`, `Azure`, `Google Cloud`), podemos profissionalizar o deploy.
 
 - **CI/CD (Continuous Integration / Continuous Deployment):**
 
-   - O que é? Um pipeline automatizado que transforma o seu git push em uma implantação em produção.
-
-   - Como funciona?
+   - Um pipeline automatizado que transforma o seu git push em uma implantação em produção.
 
    - Build & Test: Ao fazer um push para o `GitHub`, uma ferramenta como `GitHub Actions` ou `Azure DevOps` é acionada. Ela executa dotnet build e dotnet test automaticamente. Se algum teste falhar, o processo para.
 
@@ -384,15 +382,15 @@ Nosso docker-compose é ótimo para desenvolvimento e para rodar em uma única m
 
 - **Orquestração de Contêineres com Kubernetes:**
 
-   - O que é? Para aplicações que precisam de alta disponibilidade e escalabilidade, o docker-compose não é suficiente. O `Kubernetes` (`K8s`) é o padrão da indústria para gerenciar contêineres em produção.
+   - Para aplicações que precisam de alta disponibilidade e escalabilidade, o docker-compose não é suficiente. O `Kubernetes` (`K8s`) é o padrão da indústria para gerenciar contêineres em produção.
 
-   - Por que melhorar? Ele gerencia automaticamente a escalabilidade (ex: "se o uso de CPU passar de 80%, crie mais um contêiner da API"), a recuperação de falhas (se um contêiner cair, ele sobe outro) e o networking avançado.
+   - Ele gerencia automaticamente a escalabilidade (ex: "se o uso de CPU passar de 80%, crie mais um contêiner da API"), a recuperação de falhas (se um contêiner cair, ele sobe outro) e o networking avançado.
 
 - **Banco de Dados como Serviço Gerenciado (PaaS):**
 
-   - O que é? Em vez de rodar o PostgreSQL em um contêiner Docker em produção (o que exige gerenciamento de backups, atualizações, segurança, etc.), usamos um serviço gerenciado como o `Azure Database for PostgreSQL` ou o `Amazon RDS`.
+   - Em vez de rodar o `PostgreSQL` em um contêiner Docker em produção (o que exige gerenciamento de backups, atualizações, segurança, etc.), usamos um serviço gerenciado como o `Azure Database for PostgreSQL` ou o `Amazon RDS`.
 
-   - Por que melhorar? É muito mais seguro, confiável e escalável. O provedor de nuvem cuida de toda a complexidade da infraestrutura do banco de dados para você.
+   - É muito mais seguro, confiável e escalável. O provedor de nuvem cuida de toda a complexidade da infraestrutura do banco de dados para você.
 
 - **Observabilidade (Logging, Métricas e Tracing):**
 
