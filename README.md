@@ -216,7 +216,7 @@ A API assume um modelo de autenticação externa, onde a identidade do usuário 
 **Cabeçalho Obrigatório para as requisições:**
 - `X-User-Id`: O GUID do usuário que está fazendo a requisição. Este Id é previamente cadastrado na tabela `Users` para que a API possa verificar se é um usuário válido. Na inicialização do banco de dados são cadastrados dois usuários para teste.
 
-Aém disso, para auxiliar os testes da API, foram criados os endpoints de Usuários, os quais não precisam deste cabeçalho `X-User-Id`. Isso é muito útil para se testar a aplicação em um computador onde um cliente do `PostgreSQL`, como `psql` ou `pgAdmin`, não esteja instalado.
+   Além disso, para auxiliar os testes da API, foram criados os endpoints de `Usuários`, os quais não precisam deste cabeçalho `X-User-Id`. Isso é muito útil para se testar a aplicação em um computador onde um cliente do `PostgreSQL`, como `psql` ou `pgAdmin`, não esteja instalado.
 
 <details>
 <summary><strong>Endpoints de Usuários: /api/users</strong></summary>
