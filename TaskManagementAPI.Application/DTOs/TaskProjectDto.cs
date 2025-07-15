@@ -1,4 +1,7 @@
-using TaskManagementAPI.Core.Entities; // Para usar os enums TaskStatus e TaskPriority
+using TaskManagementAPI.Core.Entities; 
+
+// Mapeamentos para evitar conflitos entre classes com mesmo nome
+using TaskStatus = TaskManagementAPI.Core.Entities.TaskStatus;
 
 namespace TaskManagementAPI.Application.DTOs;
 
@@ -32,7 +35,7 @@ public class TaskProjectDto
     /// O status atual da tarefa. Usar o enum diretamente torna a API fortemente tipada.
     /// O cliente saberá que os valores possíveis são 0 (Pendente), 1 (EmAndamento), 2 (Concluida).
     /// </summary>
-    public TaskManagementAPI.Core.Entities.TaskStatus Status { get; set; }
+    public TaskStatus Status { get; set; }
 
     /// <summary>
     /// A prioridade da tarefa.

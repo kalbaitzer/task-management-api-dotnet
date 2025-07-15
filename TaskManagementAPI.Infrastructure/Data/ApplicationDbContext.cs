@@ -50,7 +50,7 @@ public class ApplicationDbContext : DbContext
         // Configuração da Entidade User
         modelBuilder.Entity<User>(entity =>
         {
-            // Informa que o campo Id será gerado automaticamente peloa banco de dados
+            // Informa que o campo Id será gerado automaticamente pelo banco de dados
             entity.Property(u => u.Id).HasDefaultValueSql("uuid_generate_v4()");
 
             // Garante que o campo Email seja único no banco de dados.
@@ -62,7 +62,7 @@ public class ApplicationDbContext : DbContext
         // Configuração da Entidade Project
         modelBuilder.Entity<Project>(entity =>
         {
-            // Informa que o campo Id será gerado automaticamente peloa banco de dados
+            // Informa que o campo Id será gerado automaticamente pelo banco de dados
             entity.Property(p => p.Id).HasDefaultValueSql("uuid_generate_v4()");
 
             // Define o relacionamento de um-para-muitos: Um User (Owner) tem muitos Projects.
@@ -78,7 +78,7 @@ public class ApplicationDbContext : DbContext
         // Configuração da Entidade Task
         modelBuilder.Entity<TaskEntity>(entity =>
         {
-            // Informa que o campo Id será gerado automaticamente peloa banco de dados
+            // Informa que o campo Id será gerado automaticamente pelo banco de dados
             entity.Property(t => t.Id).HasDefaultValueSql("uuid_generate_v4()");
 
             // Define o relacionamento: Uma Task tem um Project.
@@ -94,7 +94,7 @@ public class ApplicationDbContext : DbContext
         // Configuração da Entidade TaskHistory
         modelBuilder.Entity<TaskHistory>(entity =>
         {
-            // Informa que o campo Id será gerado automaticamente peloa banco de dados
+            // Informa que o campo Id será gerado automaticamente pelo banco de dados
             entity.Property(th => th.Id).HasDefaultValueSql("uuid_generate_v4()");
 
             // Define o relacionamento: Um TaskHistory pertence a uma Task.

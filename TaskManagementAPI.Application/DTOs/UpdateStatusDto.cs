@@ -1,5 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
+// Mapeamentos para evitar conflitos entre classes com mesmo nome
+using TaskStatus = TaskManagementAPI.Core.Entities.TaskStatus;
+
 namespace TaskManagementAPI.Application.DTOs;
 
 /// <summary>
@@ -14,5 +17,5 @@ public class UpdateStatusDto
     /// A validação [Required] garante que o cliente sempre envie um valor.
     /// </summary>
     [Required(ErrorMessage = "O status é obrigatório.")]
-    public TaskManagementAPI.Core.Entities.TaskStatus Status { get; set; }
+    public TaskStatus Status { get; set; }
 }

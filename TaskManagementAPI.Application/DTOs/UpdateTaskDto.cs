@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using TaskManagementAPI.Core.Entities; // Para usar o enum TaskStatus
+
+// Mapeamentos para evitar conflitos entre classes com mesmo nome
+using TaskStatus = TaskManagementAPI.Core.Entities.TaskStatus;
 
 namespace TaskManagementAPI.Application.DTOs;
 
@@ -33,5 +35,5 @@ public class UpdateTaskDto
     /// O novo status da tarefa.
     /// </summary>
     [Required(ErrorMessage = "O status é obrigatório.")]
-    public TaskManagementAPI.Core.Entities.TaskStatus Status { get; set; }
+    public TaskStatus Status { get; set; }
 }
