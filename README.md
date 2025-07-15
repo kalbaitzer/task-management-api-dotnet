@@ -34,7 +34,7 @@ A API implementa as seguintes regras de negócio:
 - **Persistência de Dados**: Entity Framework Core 9
 - **Banco de Dados**: PostgreSQL 16
 - **Arquitetura**: Clean Architecture
-- **Conteinerização**: Docker & Docker Compose
+- **Conteinerização**: Docker
 - **Ambiente de Desenvolvimento**: Visual Studio Code
 - **Versionamento de Código**: Git e GitHub
 - **Teste da API**: Postman
@@ -149,10 +149,10 @@ Esta é a maneira mais simples e recomendada de executar toda a aplicação.
    Serão criados dois contêineres: um para a API e outro para o PostgreSQL.
    A aplicação irá iniciar, e as migrações do banco de dados serão aplicadas automaticamente na primeira inicialização, criando todas as tabelas.
 
-4. **Acesso à API**: A api disponível em:
+4. **Acesso à API**: A api está disponível em:
    **[http://localhost:5000/](http://localhost:5000/)**
 
-5. **Publicação no Docker Hub**: Para publicar no Docker Hub é necessário apenas o contêiner da API, pois o Docker baixa automaticmente a imagem do PostgreSQL quando for executado em outros computadores. Para a publicação é necessário a execução dos seguintes comandos através do terminal, na raiz do projeto:
+5. **Publicação no Docker Hub**: Para publicar no Docker Hub é necessário apenas o contêiner da API, pois o Docker baixa automaticmente a imagem do banco de dados (`PostgreSQL`) quando for executado em outros computadores. Para a publicação é necessário a execução dos seguintes comandos através do terminal, na raiz do projeto:
    ```bash
       docker login
       docker-compose build
@@ -162,9 +162,9 @@ Esta é a maneira mais simples e recomendada de executar toda a aplicação.
 
 6. **Execução do contêiner em outros computadores**: Para executar o contêiner em outros computadores é necessário executar os seguintes passos:
    
-   1. Criar uma pasta no computador onde o contêiner será executado com o nome `task-management-api`
+   1. Crie uma pasta no computador onde o contêiner será executado com o nome `task-management-api`
    
-   2. Criar um arquivo na pasta `task-management-api` com o nome `docker-compose.yml` com o seguinte conteúdo:
+   2. Crie um arquivo na pasta `task-management-api` com o nome `docker-compose.yml` com o seguinte conteúdo:
       ```yaml
          # Configuração do container para execução em outros computadores
 
@@ -198,7 +198,7 @@ Esta é a maneira mais simples e recomendada de executar toda a aplicação.
          volumes:
          postgres_data:
       ```
-      O conteúdo dste arquivo é diferente do usado no computador de desenvolvimento.
+      O conteúdo deste arquivo é diferente do usado no computador de desenvolvimento.
       Este arquivo está disponível na raiz do projeto com o nome `docker-compose-runtime.yml`.
 
    3. No terminal, na pasta `task-management-api`, execute:
