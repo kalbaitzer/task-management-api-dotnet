@@ -181,21 +181,21 @@ public class TaskService : ITaskService
             await _taskHistoryRepository.AddAsync(history);
         }
 
-        // Alteração da descriçãp da tarefa
+        // Histórico: alteração da descriçãp da tarefa
         if (task.Description != taskDto.Description)
         {
             var history = TaskHistory.ForUpdate(taskId, userId, "Description", task.Description, taskDto.Description);
             await _taskHistoryRepository.AddAsync(history);
         }
 
-        // Alteração da data de vencimento da tarefa
+        // Histórico: alteração da data de vencimento da tarefa
         if (task.DueDate != taskDto.DueDate)
         {
             var history = TaskHistory.ForUpdate(taskId, userId, "DueTo", task.DueDate.ToLongDateString(), taskDto.DueDate.ToLongDateString());
             await _taskHistoryRepository.AddAsync(history);
         }
 
-        // Alteração do status da tarefa
+        // Histórico: alteração do status da tarefa
         if (task.Status != taskDto.Status)
         {
             var history = TaskHistory.ForUpdate(taskId, userId, "Status", task.Status.ToString(), taskDto.Status.ToString());
@@ -235,8 +235,10 @@ public class TaskService : ITaskService
 
             if (history != null)
             {
+                // Criação do histórico
                 await _taskHistoryRepository.AddAsync(history);
 
+                // Atualiza o status da tarefa
                 task.UpdateStatus(statusDto.Status,DateTime.UtcNow);
 
                 // Persiste a alteração no banco de dados
@@ -265,7 +267,10 @@ public class TaskService : ITaskService
         // Regra de Negócio 6: Cria o registro de histórico para o comentário
         var history = TaskHistory.ForComment(taskId, userId, commentDto.Comment);
 
+        // Criação do histórico
         await _taskHistoryRepository.AddAsync(history);
+
+        task.SetUpdatedAt(DateTime.UtcNow);
 
         // Persiste a alteração no banco de dados
         await _unitOfWork.SaveChangesAsync();

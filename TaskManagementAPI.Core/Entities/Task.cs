@@ -139,7 +139,6 @@ public class Task
     /// <param name="newStatus">Novo status da tarefa.</param>
     /// <param name="newUpdatedAt">Nova data de atualização da tarefa.</param>
     /// <returns>Nenhum conteúdo.</returns>
-    // Métodos públicos para alterar o estado da tarefa de forma controlada
     public void UpdateStatus(TaskStatus newStatus, DateTime newUpdateAt)
     {
         // Verificação do Status atual
@@ -149,6 +148,16 @@ public class Task
         }
 
         Status = newStatus;
+        UpdatedAt = newUpdateAt;
+    }
+
+    /// <summary>
+    /// Atualiza a data de atualização da tarefa.
+    /// </summary>
+    /// <param name="newUpdatedAt">Nova data de atualização da tarefa.</param>
+    /// <returns>Nenhum conteúdo.</returns>
+    public void SetUpdatedAt(DateTime newUpdateAt)
+    {
         UpdatedAt = newUpdateAt;
     }
 }
