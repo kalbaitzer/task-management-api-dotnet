@@ -15,6 +15,10 @@ public class TaskHistoryRepository : ITaskHistoryRepository
 {
     private readonly ApplicationDbContext _context;
 
+    /// <summary>
+    /// Construtor do repositório do Histórico de Tarefas.
+    /// </summary>
+    /// <param name="context">Núcleo do Entity FRamework Core que interage com o banco de dados.</param>
     public TaskHistoryRepository(ApplicationDbContext context)
     {
         _context = context;
@@ -22,7 +26,8 @@ public class TaskHistoryRepository : ITaskHistoryRepository
 
     /// <summary>
     /// Adiciona um novo registro de histórico ao contexto do banco de dados.
-    /// A persistência ocorre quando a Unidade de Trabalho salva as alterações.
+    /// Este é o método principal usado para registrar qualquer evento
+    /// (criação, atualização, comentário) em uma tarefa.
     /// </summary>
     /// <param name="history">A entidade de histórico a ser adicionada.</param>
     public async Task AddAsync(TaskHistory history)
@@ -31,11 +36,13 @@ public class TaskHistoryRepository : ITaskHistoryRepository
     }
 
     /// <summary>
-    /// Busca todo o histórico de uma tarefa específica.
+    /// Busca todo o histórico de alterações e comentários de uma tarefa específica,
+    /// ordenado do mais recente para o mais antigo.
+    /// Usado para exibir a trilha de auditoria na interface do usuário.
     /// </summary>
-    /// <param name="taskId">O ID da tarefa cujo histórico será recuperado.</param>
-    /// <returns>Uma coleção de registros de histórico.</returns>
-    public async Task<IEnumerable<TaskHistory>> GetByTaskIdAsync(Guid taskId)
+    /// <param name="taskId">O ID da tarefa para a qual o histórico será recuperado.</param>
+    /// <returns>Uma coleção de registros de histórico da tarefa.</returns>
+     public async Task<IEnumerable<TaskHistory>> GetByTaskIdAsync(Guid taskId)
     {
         // Include(th => th.User) é usado para carregar os dados do usuário que realizou a ação.
         // Isso é essencial para que a API possa retornar "Quem" fez a alteração.

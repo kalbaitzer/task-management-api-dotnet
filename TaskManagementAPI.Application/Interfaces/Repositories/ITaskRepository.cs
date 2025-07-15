@@ -13,6 +13,13 @@ namespace TaskManagementAPI.Application.Interfaces.Repositories;
 public interface ITaskRepository
 {
     /// <summary>
+    /// Adiciona uma nova tarefa ao contexto do banco de dados.
+    /// Usado pelo TaskService no processo de criação.
+    /// </summary>
+    /// <param name="task">A entidade da tarefa a ser adicionada.</param>
+    Task AddAsync(TaskEntity task);
+
+    /// <summary>
     /// Busca uma única tarefa pelo seu ID.
     /// Usado para atualizações, deleções e visualização de detalhes.
     /// </summary>
@@ -29,22 +36,11 @@ public interface ITaskRepository
     Task<IEnumerable<TaskEntity>> GetByProjectIdAsync(Guid projectId);
 
     /// <summary>
-    /// Adiciona uma nova tarefa ao contexto do banco de dados.
-    /// Usado pelo TaskService no processo de criação.
-    /// </summary>
-    /// <param name="task">A entidade da tarefa a ser adicionada.</param>
-    Task AddAsync(TaskEntity task);
-
-    /// <summary>
     /// Marca uma tarefa para remoção do banco de dados.
     /// A operação de salvar (commit) é feita pela Unidade de Trabalho (Unit of Work).
     /// </summary>
     /// <param name="task">A entidade da tarefa a ser removida.</param>
     void Delete(TaskEntity task);
-
-    // Nota: A atualização é geralmente manuseada pelo Change Tracker do EF Core,
-    // então um método Update() explícito muitas vezes não é necessário se você
-    // busca a entidade, modifica e depois chama SaveChanges().
 
     /// <summary>
     /// Verifica se um projeto contém tarefas ativas (Pendente ou Em Andamento).

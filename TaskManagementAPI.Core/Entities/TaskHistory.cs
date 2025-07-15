@@ -84,8 +84,15 @@ public class TaskHistory
     }
 
     /// <summary>
-    /// Construtor ppúblico.
+    /// Construtor público para criar um nomo histórico de tarefa.
     /// </summary>
+    /// <param name="changeType">O tipo de alteração.</param>
+    /// <param name="fieldName">O nome do campo que foi alterado.</param>
+    /// <param name="oldValue">O valor antigo do campo.</param>
+    /// <param name="newValue">O novo valor do campo.</param>
+    /// <param name="comment">O conteúdo de um comentário.</param>
+    /// <param name="taskId">Chave Estrangeira para a Tarefa à qual este histórico pertence.</param>
+    /// <param name="userId">ID do usuário que fez a alteração na tarefa.</param>
     public TaskHistory(string changeType, string fieldName, string oldValue, string newValue, string comment, Guid taskId, Guid userId)
     {
         ChangeType = changeType;
@@ -97,11 +104,14 @@ public class TaskHistory
         UserId = userId;
     }
 
-    // Construtores estáticos (Static Factory Methods) para criar registros de forma clara e segura
-
-        /// <summary>
-        /// Cria um registro de histórico para uma atualização de campo.
-        /// </summary>
+    /// <summary>
+    /// Construtor estático para criar um histórico quando uma tarefa é alterada.
+    /// </summary>
+    /// <param name="taskId">Chave Estrangeira para a Tarefa à qual este histórico pertence.</param>
+    /// <param name="userId">ID do usuário que fez a alteração na tarefa.</param>
+    /// <param name="fieldName">O nome do campo que foi alterado.</param>
+    /// <param name="oldValue">O valor antigo do campo.</param>
+    /// <param name="newValue">O novo valor do campo.</param>
     public static TaskHistory ForUpdate(Guid taskId, Guid userId, string fieldName, string? oldValue, string? newValue)
     {
         return new TaskHistory
@@ -116,8 +126,11 @@ public class TaskHistory
     }
 
     /// <summary>
-    /// Cria um registro de histórico para um novo comentário.
+    /// Construtor estático para criar um histórico quando é incluído um comentário â tarefa.
     /// </summary>
+    /// <param name="taskId">Chave Estrangeira para a Tarefa à qual este histórico pertence.</param>
+    /// <param name="userId">ID do usuário que fez a alteração na tarefa.</param>
+    /// <param name="comment">O conteúdo de um comentário.</param>
     public static TaskHistory ForComment(Guid taskId, Guid userId, string comment)
     {
         return new TaskHistory
@@ -130,8 +143,11 @@ public class TaskHistory
     }
 
     /// <summary>
-    /// Cria um registro de histórico para a criação da tarefa.
+    /// Construtor estático para criar um histórico quando uma tarefa é criada.
     /// </summary>
+    /// <param name="taskId">Chave Estrangeira para a Tarefa à qual este histórico pertence.</param>
+    /// <param name="userId">ID do usuário que fez a alteração na tarefa.</param>
+    /// <param name="title">Título da tarefa quando ela criada.</param>
     public static TaskHistory ForCreation(Guid taskId, Guid userId, string title)
     {
         return new TaskHistory

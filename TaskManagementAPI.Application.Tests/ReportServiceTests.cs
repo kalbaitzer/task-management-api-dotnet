@@ -9,12 +9,18 @@ using Task = System.Threading.Tasks.Task;
 
 namespace TaskManagementAPI.Application.Tests;
 
+/// <summary>
+/// Classe de testes para o serviço de Relatórios
+/// </summary>
 public class ReportServiceTests
 {
     private readonly Mock<ITaskRepository> _taskRepositoryMock;
     private readonly Mock<IUserRepository> _userRepositoryMock;
     private readonly ReportService _reportService;
 
+    /// <summary>
+    /// O construtor da classe de testes para o serviço de Relatórios
+    /// </summary>
     public ReportServiceTests()
     {
         _taskRepositoryMock = new Mock<ITaskRepository>();
@@ -24,6 +30,10 @@ public class ReportServiceTests
 
     // --- TESTE PARA A REGRA DE NEGÓCIO 5 ---
 
+    /// <summary>
+    /// Teste: relatórico gerado com sucesso quando as tarefas existem e com  o cálculo correto de média de tarefas
+    /// concluídas por usuário.
+    /// </summary>
     [Fact]
     public async Task GenerateAverageCompletedTasksReportAsync_ShouldReturnCorrectAverage_WhenTasksExist()
     {
@@ -66,6 +76,9 @@ public class ReportServiceTests
         Assert.Equal(2.0, report.AverageTasksCompletedPerUser);
     }
 
+    /// <summary>
+    /// Teste: relatório gerado não contém nenhuma eestatística das terefas concluídas, possui valores zerados.
+    /// </summary>
     [Fact]
     public async Task GenerateAverageCompletedTasksReportAsync_ShouldReturnZeroAverage_WhenNoTasksExist()
     {
@@ -92,6 +105,9 @@ public class ReportServiceTests
         Assert.Equal(0.0, report.AverageTasksCompletedPerUser);
     }
 
+    /// <summary>
+    /// Teste: a exceção BusinessRuleException é lançada quando um usuário com Role diferente de "Manager" tenta acessar o relatório.
+    /// </summary>
     [Fact]
     public async Task GenerateAverageCompletedTasksReportAsync_ShouldThrowBusinessRuleException_WhenRoleIsNotManager()
     {

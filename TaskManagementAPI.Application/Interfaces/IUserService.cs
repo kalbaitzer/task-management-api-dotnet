@@ -6,22 +6,15 @@ using Task = System.Threading.Tasks.Task;
 namespace TaskManagementAPI.Application.Interfaces;
 
 /// <summary>
-/// Contrato para o serviço que gerencia a lógica de negócio de perfis de usuário.
+/// Interface para o serviço de Usuários.
 /// </summary>
 public interface IUserService
 {
     /// <summary>
-    /// Busca o perfil de um usuário pelo seu ID.
+    /// Cria um novo usuário, de forma a facilitar o teste da aplicação.
     /// </summary>
-    /// <param name="userId">O ID do usuário.</param>
-    /// <returns>Um DTO com os dados do usuário ou nulo se não for encontrado.</returns>
-    Task<UserDto?> GetUserByIdAsync(Guid userId);
-
-    /// <summary>
-    /// Adiciona um novo usuário ao contexto do banco de dados.
-    /// </summary>
-    /// <param name="user">A entidade User a ser adicionada.</param>
-    /// <returns>Um DTO com os dados do usuário inserido.</returns>
+    /// <param name="userDto">Os dados do novo usuário.</param>
+    /// <returns>Os detalhes do usuário recém-criado.</returns>
     Task<UserDto> CreateUserAsync(UserDto userDto);
 
     /// <summary>
@@ -31,8 +24,16 @@ public interface IUserService
     Task<IEnumerable<UserDto>> GetUsersAsync();
 
     /// <summary>
-    /// Marca um usuário para deleção.
-    /// <param name="userId">O ID do usuário a ser removido.</param>
+    /// Busca um usuário específico pelo seu ID.
     /// </summary>
+    /// <param name="userId">O ID do usuário a ser buscado.</param>
+    /// <returns>Um DTO com os dados do usuário.</returns>
+    Task<UserDto?> GetUserByIdAsync(Guid userId);
+
+    /// <summary>
+    /// Marca um usuário para deleção.
+    /// </summary>
+    /// <param name="userId">O ID do usuário a ser removido.</param>
+    /// <returns>Nenhum conteúdo.</returns>
     Task DeleteUserAsync(Guid userId);
 }

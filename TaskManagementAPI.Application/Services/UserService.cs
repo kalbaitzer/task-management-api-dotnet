@@ -10,13 +10,18 @@ using Task = System.Threading.Tasks.Task;
 namespace TaskManagementAPI.Application.Services;
 
 /// <summary>
-/// Implementação do serviço de perfis de usuário.
+/// Implementação da Interface para o serviço de Usuários.
 /// </summary>
 public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
 
+    /// <summary>
+    /// Construtor do Serviço de Usuários.
+    /// </summary>
+    /// <param name="userRepository">Repositório de usuários.</param>
+    /// <param name="uniOfWork">Controle de transações e operações.</param>
     public UserService(IUserRepository userRepository, IUnitOfWork unitOfWork)
     {
         _userRepository = userRepository;
@@ -24,8 +29,10 @@ public class UserService : IUserService
     }
 
     /// <summary>
-    /// Cria um novo usuário.
+    /// Cria um novo usuário, de forma a facilitar o teste da aplicação.
     /// </summary>
+    /// <param name="userDto">Os dados do novo usuário.</param>
+    /// <returns>Os detalhes do usuário recém-criado.</returns>
     public async Task<UserDto> CreateUserAsync(UserDto userDto)
     {
         var user = new User
@@ -35,6 +42,7 @@ public class UserService : IUserService
             Role = userDto.Role
         };
 
+        // Adciona o usuário
         await _userRepository.AddAsync(user);
 
         // Persiste a alteração no banco de dados
@@ -51,6 +59,7 @@ public class UserService : IUserService
     /// <returns>Uma lista de usuários cadastrados.</returns>
     public async Task<IEnumerable<UserDto>> GetUsersAsync()
     {
+        // Obtém a lista de usuários cadastrados
         var users = await _userRepository.GetListAsync();
 
         // Mapeia a lista de entidades para uma lista de DTOs
@@ -64,7 +73,7 @@ public class UserService : IUserService
     }
 
     /// <summary>
-    /// Busca o perfil de um usuário pelo seu ID.
+    /// Busca um usuário específico pelo seu ID.
     /// </summary>
     /// <param name="userId">O ID do usuário a ser buscado.</param>
     /// <returns>Um DTO com os dados do usuário.</returns>
@@ -90,8 +99,10 @@ public class UserService : IUserService
     }
 
     /// <summary>
-    /// Remove um usuário cadastrado.
+    /// Marca um usuário para deleção.
+    /// <param name="userId">O ID do usuário a ser removido.</param>
     /// </summary>
+    /// <returns>Nenhum conteúdo.</returns>
     public async Task DeleteUserAsync(Guid userId)
     {
         // Valida se o usuário existe

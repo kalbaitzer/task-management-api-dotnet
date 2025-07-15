@@ -56,6 +56,7 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<ApplicationDbContext>();
+
         // Aplica quaisquer migrações pendentes ao banco de dados.
         // O banco de dados será criado se não existir.
         context.Database.Migrate(); 

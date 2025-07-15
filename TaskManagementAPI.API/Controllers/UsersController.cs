@@ -14,6 +14,10 @@ public class UsersController : ControllerBase
 {
     private readonly IUserService _userService;
 
+    /// <summary>
+    /// Construtor do Controller de Usuários.
+    /// </summary>
+    /// <param name="userService">Serviço de usuários.</param>
     public UsersController(IUserService userService)
     {
         _userService = userService;
@@ -35,6 +39,7 @@ public class UsersController : ControllerBase
     {
         try
         {
+            // Cria um novo usuário
             var newUser = await _userService.CreateUserAsync(userDto);
 
             if (newUser != null)
@@ -65,6 +70,7 @@ public class UsersController : ControllerBase
     {
         try
         {
+            // Obtém a lista de usuários cadastrados
             var users = await _userService.GetUsersAsync();
 
             if (users != null) return Ok(users);
@@ -92,6 +98,7 @@ public class UsersController : ControllerBase
     {
         try
         {
+            // Obtém o usuários cadastrado pelo seu ID
             var user = await _userService.GetUserByIdAsync(userId);
 
             if (user != null) return Ok(user);
@@ -119,6 +126,7 @@ public class UsersController : ControllerBase
     {
         try
         {
+            // Remove o usuário pelo seu ID
             await _userService.DeleteUserAsync(userId);
         }
         catch (Exception e)

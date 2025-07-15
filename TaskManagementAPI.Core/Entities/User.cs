@@ -14,7 +14,6 @@ public class User
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Id { get; set; } = Guid.NewGuid();
 
-
     /// <summary>
     /// Nome completo do usuário.
     /// </summary>

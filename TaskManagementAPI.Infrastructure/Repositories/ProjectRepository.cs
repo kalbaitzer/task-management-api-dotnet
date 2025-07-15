@@ -15,38 +15,41 @@ public class ProjectRepository : IProjectRepository
 {
     private readonly ApplicationDbContext _context;
 
+    /// <summary>
+    /// Construtor do repositório de Projetos.
+    /// </summary>
+    /// <param name="context">Núcleo do Entity FRamework Core que interage com o banco de dados.</param>
     public ProjectRepository(ApplicationDbContext context)
     {
         _context = context;
     }
 
     /// <summary>
-    /// Adiciona um novo projeto ao contexto.
+    /// Adiciona um novo projeto ao contexto do banco de dados.
     /// </summary>
+    /// <param name="project">A entidade do projeto a ser adicionada.</param>
     public async Task AddAsync(Project project)
     {
         await _context.Projects.AddAsync(project);
     }
 
     /// <summary>
-    /// Marca um projeto para deleção.
+    /// Busca um projeto pelo seu ID, sem incluir dados relacionados como tarefas.
+    /// Útil para operações leves como verificações de existência ou deleção.
     /// </summary>
-    public void Delete(Project project)
-    {
-        _context.Projects.Remove(project);
-    }
-
-    /// <summary>
-    /// Busca um projeto pelo seu ID, sem carregar dados relacionados.
-    /// </summary>
+    /// <param name="id">O ID do projeto.</param>
+    /// <returns>A entidade do projeto ou nulo se não for encontrada.</returns>
     public async Task<Project?> GetByIdAsync(Guid id)
     {
         return await _context.Projects.FindAsync(id);
     }
 
     /// <summary>
-    /// Busca um projeto pelo ID, incluindo a lista de tarefas associadas.
+    /// Busca um projeto pelo seu ID, incluindo sua lista de tarefas associadas.
+    /// Usado pelo ProjectService para obter a visualização detalhada de um projeto.
     /// </summary>
+    /// <param name="id">O ID do projeto.</param>
+    /// <returns>A entidade do projeto com as tarefas carregadas.</returns>
     public async Task<Project?> GetByIdWithTasksAsync(Guid id)
     {
         // Usamos Include() para "eager loading" (carregamento adiantado) das tarefas.
@@ -57,8 +60,11 @@ public class ProjectRepository : IProjectRepository
     }
 
     /// <summary>
-    /// Busca todos os projetos de um usuário específico, incluindo as tarefas para contagem.
+    /// Busca todos os projetos pertencentes a um usuário específico.
+    /// Usado pelo ProjectService para a funcionalidade de "listar meus projetos".
     /// </summary>
+    /// <param name="ownerId">O ID do usuário proprietário.</param>
+    /// <returns>Uma coleção de projetos do usuário.</returns>
     public async Task<IEnumerable<Project>> GetByOwnerIdAsync(Guid ownerId)
     {
         // Incluímos as tarefas para que a camada de serviço possa facilmente
@@ -69,5 +75,15 @@ public class ProjectRepository : IProjectRepository
             .Where(p => p.OwnerUserId == ownerId)
             .OrderByDescending(p => p.CreatedAt)
             .ToListAsync();
+    }
+
+    /// <summary>
+    /// Marca um projeto para remoção do banco de dados.
+    /// </summary>
+    /// <param name="project">A entidade do projeto a ser removida.</param>
+     /// <returns>Nenhum conteúdo.</returns>
+   public void Delete(Project project)
+    {
+        _context.Projects.Remove(project);
     }
 }

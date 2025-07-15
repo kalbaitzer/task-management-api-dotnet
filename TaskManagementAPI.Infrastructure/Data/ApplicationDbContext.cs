@@ -30,7 +30,6 @@ public class ApplicationDbContext : DbContext
     public DbSet<TaskEntity> Tasks { get; set; }
     public DbSet<TaskHistory> TaskHistories { get; set; }
 
-
     /// <summary>
     /// Este método é chamado pelo Entity Framework Core quando o modelo para um
     /// contexto derivado está sendo criado. É aqui que você pode usar a

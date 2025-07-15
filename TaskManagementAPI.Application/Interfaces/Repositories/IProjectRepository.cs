@@ -12,6 +12,12 @@ namespace TaskManagementAPI.Application.Interfaces.Repositories;
 public interface IProjectRepository
 {
     /// <summary>
+    /// Adiciona um novo projeto ao contexto do banco de dados.
+    /// </summary>
+    /// <param name="project">A entidade do projeto a ser adicionada.</param>
+    Task AddAsync(Project project);
+
+    /// <summary>
     /// Busca um projeto pelo seu ID, sem incluir dados relacionados como tarefas.
     /// Útil para operações leves como verificações de existência ou deleção.
     /// </summary>
@@ -34,12 +40,6 @@ public interface IProjectRepository
     /// <param name="ownerId">O ID do usuário proprietário.</param>
     /// <returns>Uma coleção de projetos do usuário.</returns>
     Task<IEnumerable<Project>> GetByOwnerIdAsync(Guid ownerId);
-
-    /// <summary>
-    /// Adiciona um novo projeto ao contexto do banco de dados.
-    /// </summary>
-    /// <param name="project">A entidade do projeto a ser adicionada.</param>
-    Task AddAsync(Project project);
 
     /// <summary>
     /// Marca um projeto para remoção do banco de dados.

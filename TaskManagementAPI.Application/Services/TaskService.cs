@@ -11,6 +11,9 @@ using TaskEntity = TaskManagementAPI.Core.Entities.Task;
 
 namespace TaskManagementAPI.Application.Services;
 
+/// <summary>
+/// Implementação da Interface para o serviço de Tarefas.
+/// </summary>
 public class TaskService : ITaskService
 {
     private readonly ITaskRepository _taskRepository;
@@ -19,7 +22,14 @@ public class TaskService : ITaskService
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    // Injeção de Dependência dos repositórios e da Unidade de Trabalho
+    /// <summary>
+    /// Construtor do Serviço de Tarefas.
+    /// </summary>
+    /// <param name="taskRepository">Repositório de tarefas.</param>
+    /// <param name="projectRepository">Repositório de projetos.</param>
+    /// <param name="taskHistoryRepository">Repositório do histórico de tarefas.</param>
+    /// <param name="userRepository">Repositório de usuários.</param>
+    /// <param name="uniOfWork">Controle de transações e operações.</param>
     public TaskService(
         ITaskRepository taskRepository,
         IProjectRepository projectRepository,
@@ -35,8 +45,12 @@ public class TaskService : ITaskService
     }
 
     /// <summary>
-    /// Cria uma nova tarefa, aplicando as regras de negócio.
+    /// Cria uma nova tarefa dentro de um projeto, aplicando a regra de limite de tarefas por projeto.
     /// </summary>
+    /// <param name="projectId">O ID do projeto onde a tarefa será criada.</param>
+    /// <param name="createTaskDto">Os dados da nova tarefa.</param>
+    /// <param name="userIdd">O ID do usuário.</param>
+    /// <returns>Os detalhes do usuário recém-criado.</returns>
     public async Task<TaskDto> CreateTaskAsync(Guid projectId, CreateTaskDto taskDto, Guid userId)
     {
         // Verifica se o usuário existe
@@ -78,6 +92,12 @@ public class TaskService : ITaskService
         };
     }
 
+    /// <summary>
+    /// Lista todas as tarefas de um projeto específico.
+    /// </summary>
+    /// <param name="projectId">O ID do projeto.</param>
+    /// <param name="userIdd">O ID do usuário.</param>
+    /// <returns>Uma lista de tarefas do projeto.</returns>
     public async Task<IEnumerable<TaskDto>> GetTasksByProjectAsync(Guid projectId, Guid userId)
     {
         // Verifica se o usuário existe
@@ -86,6 +106,7 @@ public class TaskService : ITaskService
         // Verifica se o projeto existe
         await ServiceHelper.CheckProject(projectId, _projectRepository);
 
+        // Obtém a lista de tarefas do projeto
         var tasks = await _taskRepository.GetByProjectIdAsync(projectId);
 
         // Mapear a lista de entidades para uma lista de TaskDto
@@ -103,6 +124,12 @@ public class TaskService : ITaskService
         }).ToList();
     }
 
+    /// <summary>
+    /// Busca uma tarefa específica pelo seu ID.
+    /// </summary>
+    /// <param name="taskId">O ID da tarefa.</param>
+    /// <param name="userIdd">O ID do usuário.</param>
+    /// <returns>Os detalhes da tarefa.</returns>
     public async Task<TaskDto?> GetTaskByIdAsync(Guid taskId, Guid userId)
     {
         // Verifica se o usuário existe
@@ -129,8 +156,12 @@ public class TaskService : ITaskService
     }
 
     /// <summary>
-    /// Atualiza os detalhes de uma tarefa, registrando o histórico.
+    /// Atualiza os detalhes de uma tarefa.
     /// </summary>
+    /// <param name="taskId">O ID da tarefa.</param>
+    /// <param name="taskDto">Os novos dados da tarefa.</param>
+    /// <param name="userIdd">O ID do usuário.</param>
+    /// <returns>Nenhum conteúdo.</returns>
     public async Task UpdateTaskDetailsAsync(Guid taskId, UpdateTaskDto taskDto, Guid userId)
     {
         // Verifica se o usuário existe
@@ -179,8 +210,12 @@ public class TaskService : ITaskService
     }
 
     /// <summary>
-    /// Atualiza apenas o status de uma tarefa.
+    /// Atualiza o status de uma tarefa.
     /// </summary>
+    /// <param name="taskId">O ID da tarefa.</param>
+    /// <param name="statusDto">O novo status da tarefa.</param>
+    /// <param name="userIdd">O ID do usuário.</param>
+    /// <returns>Nenhum conteúdo.</returns>
     public async Task UpdateTaskStatusAsync(Guid taskId, UpdateStatusDto statusDto, Guid userId)
     {
         // Verifica se o usuário existe
@@ -213,6 +248,10 @@ public class TaskService : ITaskService
     /// <summary>
     /// Adiciona um comentário a uma tarefa.
     /// </summary>
+    /// <param name="taskId">O ID da tarefa.</param>
+    /// <param name="commentDto">O comentário a ser adicionado.</param>
+    /// <param name="userIdd">O ID do usuário.</param>
+    /// <returns>Status Code 201.</returns>
     public async Task AddCommentAsync(Guid taskId, AddCommentDto commentDto, Guid userId)
     {
         // Verifica se o usuário existe
@@ -232,6 +271,12 @@ public class TaskService : ITaskService
         await _unitOfWork.SaveChangesAsync();
     }
 
+    /// <summary>
+    /// Remove uma tarefa.
+    /// </summary>
+    /// <param name="taskId">O ID da tarefa a ser removida.</param>
+    /// <param name="userIdd">O ID do usuário.</param>
+    /// <returns>Nenhum conteúdo.</returns>
     public async Task DeleteTaskAsync(Guid taskId, Guid userId)
     {
         // Verifica se o usuário existe
@@ -253,10 +298,10 @@ public class TaskService : ITaskService
     }
 
     /// <summary>
-    /// Busca todo o histórico de uma tarefa específica.
+    /// Busca o histórico completo de uma tarefa.
     /// </summary>
-    /// <param name="taskId">O ID da tarefa cujo histórico será recuperado.</param>
-    /// <returns>Uma coleção de registros de histórico.</returns>
+    /// <param name="taskId">O ID da tarefa.</param>
+    /// <param name="userIdd">O ID do usuário.</param>
     public async Task<IEnumerable<TaskHistoryDto>> GetTaskHistoryAsync(Guid taskId, Guid userId)
     {
         // Verifica se o usuário existe

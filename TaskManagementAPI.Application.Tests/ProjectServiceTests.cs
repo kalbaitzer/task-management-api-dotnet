@@ -11,6 +11,9 @@ using Task = System.Threading.Tasks.Task;
 
 namespace TaskManagementAPI.Application.Tests;
 
+/// <summary>
+/// Classe de testes para o serviço de Projetos.
+/// </summary>
 public class ProjectServiceTests
 {
     private readonly Mock<IProjectRepository> _projectRepositoryMock;
@@ -19,8 +22,9 @@ public class ProjectServiceTests
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
     private readonly ProjectService _projectService;
 
-    // O construtor da classe de teste é executado antes de cada teste,
-    // garantindo um ambiente limpo.
+    /// <summary>
+    /// O construtor da classe de testes para o serviço de Projetos.
+    /// </summary>
     public ProjectServiceTests()
     {
         _projectRepositoryMock = new Mock<IProjectRepository>();
@@ -38,6 +42,9 @@ public class ProjectServiceTests
 
     // --- TESTES PARA O MÉTODO GetProjectByIdAsync ---
 
+    /// <summary>
+    /// Teste: obtém dos detalhes do projeto quando ele existe, ou seja, está cadastrado.
+    /// </summary>
     [Fact]
     public async Task GetProjectByIdAsync_ShouldReturnProjectDetailDto_WhenProjectExists()
     {
@@ -81,8 +88,11 @@ public class ProjectServiceTests
         Assert.Equal(project.CreatedAt, result.CreatedAt);
     }
 
+    /// <summary>
+    /// Teste: a exceção NotFoundExcption é lançada quando o projeto não existe, ou seja, não está cadastrado.
+    /// </summary>
     [Fact]
-    public async Task GetProjectByIdAsync_ShouldReturnNull_WhenProjectDoesNotExist()
+    public async Task GetProjectByIdAsync_ShouldThrowNotFoundException_WhenProjectDoesNotExist()
     {
         // Arrange
         var userId = Guid.NewGuid();
@@ -112,6 +122,10 @@ public class ProjectServiceTests
 
     // --- TESTE PARA A REGRA DE NEGÓCIO 2 ---
 
+    /// <summary>
+    /// Teste: a exceção BusinessRuleException é lançada quando se tenta remover um projeto com tarefas ativas,
+    /// que ainda não foram concluídas
+    /// </summary>
     [Fact]
     public async Task DeleteProjectAsync_ShouldThrowBusinessRuleException_WhenProjectHasActiveTasks()
     {
@@ -145,6 +159,10 @@ public class ProjectServiceTests
         Assert.Equal("Não é possível remover o projeto. Existem tarefas pendentes ou em andamento. Conclua ou remova as tarefas primeiro.", exception.Message);
     }
 
+    /// <summary>
+    /// Teste: a exclusão de um projeto é realizada com sucesso quando ele não tem tarefas ativas, ou seja, 
+    /// todas as suas tarefas já foram concluídas
+    /// </summary>
     [Fact]
     public async Task DeleteProjectAsync_ShouldCallDeleteAndSaveChanges_WhenProjectHasNoActiveTasks()
     {

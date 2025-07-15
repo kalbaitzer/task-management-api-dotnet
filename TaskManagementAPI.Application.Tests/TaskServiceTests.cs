@@ -13,6 +13,9 @@ using TaskStatus = TaskManagementAPI.Core.Entities.TaskStatus;
 
 namespace TaskManagementAPI.Application.Tests;
 
+/// <summary>
+/// Classe de testes para o swrviço de Tarefas.
+/// </summary>
 public class TaskServiceTests
 {
     private readonly Mock<ITaskRepository> _taskRepositoryMock;
@@ -22,7 +25,9 @@ public class TaskServiceTests
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
     private readonly TaskService _taskService;
 
-    // Construtor para inicializar os mocks e o serviço antes de cada teste
+    /// <summary>
+    /// O construtor da classe de testes para o swrviço de Tarefas.
+    /// </summary>
     public TaskServiceTests()
     {
         _taskRepositoryMock = new Mock<ITaskRepository>();
@@ -42,6 +47,9 @@ public class TaskServiceTests
 
     // --- TESTES PARA O MÉTODO GetTaskByIdAsync ---
 
+    /// <summary>
+    /// Teste: obtém dos detalhes da tarefa quando ela existe, ou seja, está cadastrada.
+    /// </summary>
     [Fact]
     public async Task GetTaskByIdAsync_ShouldReturnTaskDto_WhenTaskExists()
     {
@@ -95,8 +103,11 @@ public class TaskServiceTests
         Assert.Equal(task.Priority, result.Priority);
     }
 
+    /// <summary>
+    /// Teste: a exceção NotFoundExcption é lançada quando a tarefa não existe, ou seja, não está cadastrada,
+    /// </summary>
     [Fact]
-    public async Task GetTaskByIdAsync_ShouldReturnNull_WhenTaskDoesNotExist()
+    public async Task GetTaskByIdAsync_ShouldThrowNotFoundException_WhenTaskDoesNotExist()
     {
         // Arrange
         var taskId = Guid.NewGuid();
@@ -133,6 +144,9 @@ public class TaskServiceTests
 
     // --- TESTE PARA A REGRA DE NEGÓCIO 1 ---
 
+    /// <summary>
+    /// Teste: a prioridade da tarefa não é modificada quando os detalhes da tarefa são alterados.
+    /// </summary>
     [Fact]
     public async Task UpdateTaskDetailsAsync_ShouldNotChangePriority_WhenUpdatingOtherDetails()
     {
@@ -194,6 +208,9 @@ public class TaskServiceTests
 
     // --- TESTE PARA A REGRA DE NEGÓCIO 3 ---
 
+    /// <summary>
+    /// Teste: é gerado um histórico quando quando uma informação da tarefa é alterada, como por exemplo o título.
+    /// </summary>
     [Fact]
     public async Task UpdateTaskDetailsAsync_ShouldCreateHistoryRecord_WhenTitleIsChanged()
     {
@@ -262,6 +279,9 @@ public class TaskServiceTests
 
     // --- TESTE PARA A REGRA DE NEGÓCIO 4 ---
 
+    /// <summary>
+    /// Teste: a exceção BusinessRuleException é lançada quando se tenta incluir mais que 20 tarefas em um projeto.
+    /// </summary>
     [Fact]
     public async Task CreateTaskAsync_ShouldThrowBusinessRuleException_WhenProjectTaskLimitIsReached()
     {
@@ -317,13 +337,16 @@ public class TaskServiceTests
     
     // --- TESTE PARA A REGRA DE NEGÓCIO 6 ---
 
+    /// <summary>
+    /// Teste: é possível adicionar comentários em uma tarefa quando ela existe.
+    /// </summary>
     [Fact]
     public async Task AddCommentAsync_ShouldCreateCommentHistoryRecord_WhenTaskExists()
     {
         // Arrange (Arranjar)
         var taskId = Guid.NewGuid();
         var userId = Guid.NewGuid();
-        var comentario = "Este é um comentário de teste importante.";
+        var comentario = "Teste.";
 
         // Cria a entidade de Usuário que "existe" no banco.
         var user = new User { Id = userId };
@@ -363,6 +386,9 @@ public class TaskServiceTests
         _unitOfWorkMock.Verify(uow => uow.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 
+    /// <summary>
+    /// Teste: a exceção NotFoundException é lançada quando se tenta adicionar um comentário a uma tarefa que não existe.
+    /// </summary>
     [Fact]
     public async Task AddCommentAsync_ShouldThrowNotFoundException_WhenTaskDoesNotExist()
     {
@@ -371,7 +397,7 @@ public class TaskServiceTests
         var userId = Guid.NewGuid();
         var commentDto = new AddCommentDto { Comment = "Teste" };
 
-         // Cria a entidade de Usuário que "existe" no banco.
+        // Cria a entidade de Usuário que "existe" no banco.
         var user = new User { Id = userId };
 
         // Configura o mock do repositório para "encontrar" o usuário.
@@ -386,7 +412,6 @@ public class TaskServiceTests
             () => _taskService.AddCommentAsync(nonExistentTaskId, commentDto, userId)
         );
         
- 
         // Verifica se a mensagem da exceção é a correta.
         Assert.Equal("Tarefa não encontrada.", exception.Message);
 

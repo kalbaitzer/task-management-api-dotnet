@@ -10,6 +10,9 @@ using Task = System.Threading.Tasks.Task;
 
 namespace TaskManagementAPI.Application.Services;
 
+/// <summary>
+/// Implementação da Interface para o serviço de Projetos.
+/// </summary>
 public class ProjectService : IProjectService
 {
     private readonly IProjectRepository _projectRepository;
@@ -17,6 +20,13 @@ public class ProjectService : IProjectService
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
 
+    /// <summary>
+    /// Construtor do Serviço de Projetos.
+    /// </summary>
+    /// <param name="projectRepository">Repositório de projetos.</param>
+    /// <param name="taskRepository">Repositório de tarefas.</param>
+    /// <param name="userRepository">Repositório de usuários.</param>
+    /// <param name="uniOfWork">Controle de transações e operações.</param>
     public ProjectService(IProjectRepository projectRepository, ITaskRepository taskRepository, IUserRepository userRepository, IUnitOfWork unitOfWork)
     {
         _projectRepository = projectRepository;
@@ -26,9 +36,12 @@ public class ProjectService : IProjectService
     }
 
     /// <summary>
-    /// Cria um novo projeto para o usuário especificado.
+    /// Cria um novo projeto para o usuário autenticado.
     /// </summary>
-    public async Task<ProjectDetailDto> CreateProjectAsync(CreateProjectDto projectDto, Guid userId)
+    /// <param name="projectDto">Os dados do novo projeto.</param>
+    /// <param name="userIdd">O ID do usuário.</param>
+    /// <returns>Os detalhes do projeto recém-criado.</returns>
+     public async Task<ProjectDetailDto> CreateProjectAsync(CreateProjectDto projectDto, Guid userId)
     {
         // Verifica se o usuário existe
         await ServiceHelper.CheckUser(userId, _userRepository);
@@ -40,6 +53,7 @@ public class ProjectService : IProjectService
             OwnerUserId = userId // Define o proprietário do projeto
         };
 
+        // Adiciona o projeto
         await _projectRepository.AddAsync(project);
 
         // Persiste a alteração no banco de dados
@@ -57,13 +71,17 @@ public class ProjectService : IProjectService
     }
 
     /// <summary>
-    /// Lista todos os projetos de um usuário.
+    /// Busca um projeto pelo seu ID
     /// </summary>
+    /// <param name="projetcId">O ID do projeto.</param>
+    /// <param name="userIdd">O ID do usuário.</param>
+    /// <returns>A entidade do projeto ou nulo se não for encontrada.</returns>
     public async Task<IEnumerable<ProjectDto>> GetUserProjectsAsync(Guid userId)
     {
         // Verifica se o usuário existe
         await ServiceHelper.CheckUser(userId, _userRepository);
 
+        // Obtém o projeto do repositório
         var projects = await _projectRepository.GetByOwnerIdAsync(userId);
 
         // Mapeia a lista de entidades para uma lista de DTOs de resumo
@@ -76,13 +94,16 @@ public class ProjectService : IProjectService
     }
 
     /// <summary>
-    /// Busca um projeto detalhado por ID, verificando a propriedade.
+    /// Lista todos os projetos cadastrados.
     /// </summary>
+    /// <param name="id">O ID do usuário.</param>
+    /// <returns>A entidade do projeto com as tarefas carregadas.</returns>
     public async Task<ProjectDetailDto?> GetProjectByIdAsync(Guid projectId, Guid userId)
     {
         // Verifica se o usuário existe
         await ServiceHelper.CheckUser(userId, _userRepository);
 
+        // Obtém a lista de projetos
         var project = await _projectRepository.GetByIdWithTasksAsync(projectId);
 
         if (project == null)
@@ -116,6 +137,9 @@ public class ProjectService : IProjectService
     /// <summary>
     /// Remove um projeto, aplicando a regra de negócio de restrição de remoção.
     /// </summary>
+    /// <param name="projectId">O ID do projeto a ser removido.</param>
+    /// <param name="userIdd">O ID do usuário.</param>
+    /// <returns>Nenhum conteúdo.</returns>
     public async Task DeleteProjectAsync(Guid projectId, Guid userId)
     {
         // Verifica se o usuário existe

@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using TaskManagementAPI.Core.Entities; // Para usar o enum TaskStatus
 
 namespace TaskManagementAPI.Application.DTOs;
 

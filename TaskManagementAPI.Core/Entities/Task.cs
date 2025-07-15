@@ -97,6 +97,11 @@ public class Task
     /// <summary>
     /// Construtor público para criar uma nova tarefa de forma controlada e válida.
     /// </summary>
+    /// <param name="title">Título da tarefa.</param>
+    /// <param name="description">Descrição detalhada da tarefa.</param>
+    /// <param name="dueDate">Data de vencimento da tarefa.</param>
+    /// <param name="priority">Prioridade da tarefa (Baixa, Média, Alta).</param>
+    /// <param name="projectId">Chave Estrangeira para a entidade Project.</param>
     public Task(string title, string description, DateTime dueDate, TaskPriority priority, Guid projectId)
     {
         Id = Guid.NewGuid();
@@ -110,19 +115,32 @@ public class Task
         CreatedAt = DateTime.UtcNow;
     }
 
-    // Métodos públicos para alterar o estado da tarefa de forma controlada
-
-    public void UpdateDetails(string newTitle, string newDescription, DateTime newDueDate, TaskStatus status, DateTime updateAt)
+    /// <summary>
+    /// Atualiza os detalhes da tarefa.
+    /// </summary>
+    /// <param name="newtitle">Novo título da tarefa.</param>
+    /// <param name="newDescription">Nova descrição da tarefa.</param>
+    /// <param name="newDueDate">Nova data de vencimento da tarefa.</param>
+    /// <param name="newStatus">Novo status da tarefa.</param>
+    /// <param name="newUpdatedAt">Nova data de atualização da tarefa.</param>
+    /// <returns>Nenhum conteúdo.</returns>
+    public void UpdateDetails(string newTitle, string newDescription, DateTime newDueDate, TaskStatus newStatus, DateTime newUpdateAt)
     {
-        // Adicionar validações aqui se necessário
         Title = newTitle;
         Description = newDescription;
         DueDate = newDueDate;
-        Status = status;
-        UpdatedAt = updateAt;
+        Status = newStatus;
+        UpdatedAt = newUpdateAt;
     }
 
-    public void UpdateStatus(TaskStatus newStatus, DateTime updateAt)
+    /// <summary>
+    /// Atualiza o status da tarefa.
+    /// </summary>
+    /// <param name="newStatus">Novo status da tarefa.</param>
+    /// <param name="newUpdatedAt">Nova data de atualização da tarefa.</param>
+    /// <returns>Nenhum conteúdo.</returns>
+    // Métodos públicos para alterar o estado da tarefa de forma controlada
+    public void UpdateStatus(TaskStatus newStatus, DateTime newUpdateAt)
     {
         // Verificação do Status atual
         if (Status == TaskStatus.Concluida && newStatus != TaskStatus.Concluida)
@@ -131,6 +149,6 @@ public class Task
         }
 
         Status = newStatus;
-        UpdatedAt = updateAt;
+        UpdatedAt = newUpdateAt;
     }
 }

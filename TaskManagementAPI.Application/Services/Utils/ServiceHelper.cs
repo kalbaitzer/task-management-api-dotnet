@@ -13,6 +13,12 @@ namespace TaskManagementAPI.Application.Services.Utils;
 /// </summary>
 public static class ServiceHelper
 {
+    /// <summary>
+    /// Verifica se o ID do usuário é válido e se está cadastrado.
+    /// </summary>
+    /// <param name="userId">ID do usuário.</param>
+    /// <param name="userRepository">Repositório para usuários.</param>
+    /// <returns>A Entidade User.</returns>
     public static async Task<User?> CheckUser(Guid userId, IUserRepository userRepository)
     {
         if (userId == Guid.Empty)
@@ -32,6 +38,12 @@ public static class ServiceHelper
         return user;
     }
 
+    /// <summary>
+    /// Verifica se o projeto está cadastrado.
+    /// </summary>
+    /// <param name="projectId">ID do projeto.</param>
+    /// <param name="projectRepository">Repositório para projetos.</param>
+    /// <returns>A Entidade Project.</returns>
     public static async Task<Project?> CheckProject(Guid projectId, IProjectRepository projectRepository)
     {
         // Valida se o projeto existe
@@ -46,7 +58,12 @@ public static class ServiceHelper
         return project;
     }
 
-
+    /// <summary>
+    /// Verifica se a tarefa está cadastrado.
+    /// </summary>
+    /// <param name="taskId">ID da tarefa.</param>
+    /// <param name="taskRepository">Repositório para tarefas.</param>
+    /// <returns>A Entidade TaskEntity.</returns>
     public static async Task<TaskEntity?> CheckTask(Guid taskId, ITaskRepository taskRepository)
     {
         var task = await taskRepository.GetByIdAsync(taskId);
@@ -60,6 +77,12 @@ public static class ServiceHelper
         return task;
     }
 
+    /// <summary>
+    /// Verifica se o usuário está cadastrado e se é um gerente ((Manager).
+    /// </summary>
+    /// <param name="userId">ID do projeto.</param>
+    /// <param name="userRepository">Repositório para usuários.</param>
+    /// <returns>A Entidade Project.</returns>
     public static async Task<User?> CheckManager(Guid userId, IUserRepository userRepository)
     {
         // Verificação do usuário
@@ -69,7 +92,7 @@ public static class ServiceHelper
         {
             if (user.Role != "Manager")
             {
-                // Retorna HTTP 403 Forbidden
+                // Lança uma exceção de acesso negado
                 throw new ForbiddenAccessException("Você não tem permissão para acessar este relatório.");
             }
         }

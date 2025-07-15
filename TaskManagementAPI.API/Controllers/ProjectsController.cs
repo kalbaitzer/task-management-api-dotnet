@@ -15,6 +15,11 @@ public class ProjectsController : ControllerBase
     private readonly IUserService _userService;
     private readonly IProjectService _projectService;
 
+    /// <summary>
+    /// Construtor do Controller de Projetos.
+    /// </summary>
+    /// <param name="userService">Serviço de usuários.</param>
+    /// <param name="projectService">Serviço de projetos.</param>
     public ProjectsController(IUserService userService, IProjectService projectService)
     {
         _userService = userService;
@@ -40,6 +45,7 @@ public class ProjectsController : ControllerBase
             // Obtém o Id do usuário no cabeçalho do Request: X-User-Id
             var userId = ControllerHelper.GetUserId(Request);
 
+            // Cria o novo projeto
             var newProject = await _projectService.CreateProjectAsync(projectDto, userId);
 
             if (newProject != null)
@@ -70,9 +76,10 @@ public class ProjectsController : ControllerBase
     {
         try
         {
-            // Obtém o Id do usuário no cabeçalho do Request: X-User-Id
+            // Obtém o ID do usuário no cabeçalho do Request: X-User-Id
             var userId = ControllerHelper.GetUserId(Request);
 
+            // Obtém a lista de projetos cadastrados
             var projects = await _projectService.GetUserProjectsAsync(userId);
 
             if (projects != null) return Ok(projects);
@@ -100,9 +107,10 @@ public class ProjectsController : ControllerBase
     {
         try
         {
-            // Obtém o Id do usuário no cabeçalho do Request: X-User-Id
+            // Obtém o ID do usuário no cabeçalho do Request: X-User-Id
             var userId = ControllerHelper.GetUserId(Request);
 
+            // Obtém o projeto cadastrado pelo seu ID
             var project = await _projectService.GetProjectByIdAsync(projectId, userId);
 
             if (project != null) return Ok(project);
@@ -116,7 +124,7 @@ public class ProjectsController : ControllerBase
     }
 
     /// <summary>
-    /// Remove um projeto específico.
+    /// Remove um projeto específico pelo seu ID.
     /// </summary>
     /// <param name="projectId">O ID do projeto a ser removido.</param>
     /// <returns>Nenhum conteúdo.</returns>
@@ -130,9 +138,10 @@ public class ProjectsController : ControllerBase
     {
         try
         {
-            // Obtém o Id do usuário no cabeçalho do Request: X-User-Id
+            // Obtém o ID do usuário no cabeçalho do Request: X-User-Id
             var userId = ControllerHelper.GetUserId(Request);
 
+            // Remove o projeto pelo seu ID
             await _projectService.DeleteProjectAsync(projectId, userId);
         }
         catch (Exception e)

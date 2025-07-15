@@ -15,24 +15,29 @@ public class UserRepository : IUserRepository
 {
     private readonly ApplicationDbContext _context;
 
+    /// <summary>
+    /// Construtor do repositório de Usuários.
+    /// </summary>
+    /// <param name="context">Núcleo do Entity FRamework Core que interage com o banco de dados.</param>
     public UserRepository(ApplicationDbContext context)
     {
         _context = context;
     }
 
     /// <summary>
-    /// Adiciona um novo usuário ao contexto do banco de dados.
-    /// A persistência real ocorre quando SaveChangesAsync é chamado na Unidade de Trabalho.
+    /// Cria um novo usuário, de forma a facilitar o teste da aplicação.
     /// </summary>
-    /// <param name="user">A entidade User a ser adicionada.</param>
-    public async Task AddAsync(User user)
+    /// <param name="user">Os dados do novo usuário.</param>
+    /// <returns>Os detalhes do usuário recém-criado.</returns>
+     public async Task AddAsync(User user)
     {
         await _context.Users.AddAsync(user);
     }
 
     /// <summary>
-    /// Busca todos os usuários cadastrados.
+    /// Lista todos os usuários cadastrados.
     /// </summary>
+    /// <returns>Uma lista de usuários cadastrados.</returns>
     public async Task<IEnumerable<User>> GetListAsync()
     {
         // Obtém a lista de usuários cadastrados ordenados pelo nome.
@@ -54,8 +59,9 @@ public class UserRepository : IUserRepository
 
     /// <summary>
     /// Marca um usuário para deleção.
-    /// <param name="user">A entidade User a ser removida.</param>
     /// </summary>
+    /// <param name="userId">O ID do usuário a ser removido.</param>
+    /// <returns>Nenhum conteúdo.</returns>
     public void Delete(User user)
     {
         _context.Users.Remove(user);

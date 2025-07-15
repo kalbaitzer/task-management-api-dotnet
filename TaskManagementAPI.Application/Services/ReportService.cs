@@ -6,11 +6,19 @@ using TaskManagementAPI.Application.Services.Utils;
 
 namespace TaskManagementAPI.Application.Services;
 
+/// <summary>
+/// Implementação da Interface para o serviço de Relatórios.
+/// </summary>
 public class ReportService : IReportService
 {
     private readonly ITaskRepository _taskRepository;
     private readonly IUserRepository _userRepository;
 
+    /// <summary>
+    /// Construtor do Serviço de Relatórios.
+    /// </summary>
+    /// <param name="taskRepository">Repositório de tarefas.</param>
+    /// <param name="userRepository">Repositório de usuários.</param>
     public ReportService(ITaskRepository taskRepository, IUserRepository userRepository)
     {
         _taskRepository = taskRepository;
@@ -21,6 +29,7 @@ public class ReportService : IReportService
     /// Gera um relatório de desempenho com a média de tarefas concluídas por usuário nos últimos 30 dias.
     /// Esta funcionalidade implementa a Regra de Negócio 5.
     /// </summary>
+    /// <param name="userIdd">O ID do usuário.</param>
     /// <returns>Um DTO com os dados do relatório.</returns>
     public async Task<PerformanceReportDto> GenerateAverageCompletedTasksReportAsync(Guid userId)
     {
