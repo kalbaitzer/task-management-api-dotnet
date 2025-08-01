@@ -59,7 +59,7 @@ public static class ServiceHelper
     }
 
     /// <summary>
-    /// Verifica se a tarefa está cadastrado.
+    /// Verifica se a tarefa está cadastrada.
     /// </summary>
     /// <param name="taskId">ID da tarefa.</param>
     /// <param name="taskRepository">Repositório para tarefas.</param>
@@ -78,7 +78,7 @@ public static class ServiceHelper
     }
 
     /// <summary>
-    /// Verifica se o usuário está cadastrado e se é um gerente ((Manager).
+    /// Verifica se o usuário está cadastrado e se é um gerente (Manager).
     /// </summary>
     /// <param name="userId">ID do projeto.</param>
     /// <param name="userRepository">Repositório para usuários.</param>
