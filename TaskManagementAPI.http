@@ -1,0 +1,160 @@
+##################################################################################
+### Requisições para Usuários
+##################################################################################
+
+### createUser
+POST http://localhost:5123/api/users
+Content-Type: application/json
+
+{
+  "name": "Ednaldo Kalbaitzer",
+  "email": "kalbaitzer@yahoo.com.br",
+  "role": "Manager"
+}
+
+### createUser
+POST http://localhost:5123/api/users
+Content-Type: application/json
+
+{
+  "name": "User 1",
+  "email": "user1@gmail.com",
+  "role": "User"
+}
+
+### getAllUsers
+GET http://localhost:5123/api/users
+
+### getUserById
+GET http://localhost:5123/api/users/e888710c-5e56-457b-8703-3ca975a9c3b3
+
+### updateUser
+PUT http://localhost:5123/api/users/9a61522c-e5a4-47a7-b52c-9507aa72e4f2
+Content-Type: application/json
+
+{
+  "name": "Teste alteração 2",
+  "email": "teste2@gmail.com",
+  "role": "User"
+}
+
+### deleteUser
+DELETE http://localhost:5123/api/users/b03f0f94-468d-475d-a08f-98b2bcd859fb
+
+
+##################################################################################
+### Requisições para Projetos
+##################################################################################
+
+### createProject
+POST http://localhost:5123/api/projects
+X-User-Id: f6bc4a46-d749-4dfd-aec5-133fcf67f083
+Content-Type: application/json
+
+{
+  "name": "Projeto C# .NET Core + PostgreSQL",
+  "description": "Gerencimento de Tarefas"
+}
+
+### createProject
+POST http://localhost:5123/api/projects
+X-User-Id: f6bc4a46-d749-4dfd-aec5-133fcf67f083
+Content-Type: application/json
+
+{
+  "name": "Projeto 3",
+  "description": "Descrição 3"
+}
+
+### getAllProjects
+GET http://localhost:5123/api/projects
+X-User-Id: f6bc4a46-d749-4dfd-aec5-133fcf67f083
+
+### getProjectById
+GET http://localhost:5123/api/projects/8c4cf56a-d20d-4017-864f-1b9220529e4c
+X-User-Id: 5ae4eb99-73fc-4dc0-9e9d-f35b548ac691
+
+### updateProject
+PUT http://localhost:5123/api/projects/03078fc9-fbd9-4aab-857b-876034107087
+X-User-Id: d5a1a361-40f7-48ec-8b31-81ce17a990f4
+Content-Type: application/json
+
+{
+  "name": "Projeto 3",
+  "description": "Descrição 3"
+}
+
+### deletProject
+DELETE http://localhost:5123/api/projects/03078fc9-fbd9-4aab-857b-876034107087
+X-User-Id: d5a1a361-40f7-48ec-8b31-81ce17a990f4
+
+
+##################################################################################
+### Requisições para Tarefas
+##################################################################################
+
+### createTaskForProject
+POST http://localhost:5123/api/tasks/projects/63f63bdd-0c04-4db0-88cb-aa66f248a3c2
+X-User-Id: f6bc4a46-d749-4dfd-aec5-133fcf67f083
+Content-Type: application/json
+
+{ 
+  "title": "Tarefa 2", 
+  "description": "Iniciar atividade 2",
+  "dueDate": "2025-10-15T10:00:00Z", 
+  "priority": "Media"
+}
+
+### getTasksByProject
+GET http://localhost:5123/api/tasks/projects/8c4cf56a-d20d-4017-864f-1b9220529e4c
+X-User-Id: f6bc4a46-d749-4dfd-aec5-133fcf67f083
+
+### getTaskById
+GET http://localhost:5123/api/tasks/2bf13943-2cb8-4b38-a0e6-42dca3fdef6d
+X-User-Id: e9d5d6fd-8d2c-4c3e-8d44-dfc246343d9e
+
+### updateTask
+PUT http://localhost:5123/api/tasks/2bf13943-2cb8-4b38-a0e6-42dca3fdef6d
+X-User-Id: e9d5d6fd-8d2c-4c3e-8d44-dfc246343d9e
+Content-Type: application/json
+
+{ 
+  "title": "Tarefa 2 alterada", 
+  "description": "Alterando tarefa 2",
+  "dueDate": "2030-10-04T10:00:00Z",
+  "status": "EmAndamento"
+}
+
+### updateTaskStatus
+PATCH http://localhost:5123/api/tasks/2bf13943-2cb8-4b38-a0e6-42dca3fdef6d/status
+X-User-Id: e9d5d6fd-8d2c-4c3e-8d44-dfc246343d9e
+Content-Type: application/json
+
+{ 
+  "status": "Concluida"
+}
+
+### addComment
+POST http://localhost:5123/api/tasks/2bf13943-2cb8-4b38-a0e6-42dca3fdef6d/comments
+X-User-Id: e9d5d6fd-8d2c-4c3e-8d44-dfc246343d9e
+Content-Type: application/json
+
+{ 
+  "comment": "Tarefa concluída com sucesso"
+}
+
+### getTaskHistory
+GET http://localhost:5123/api/tasks/2bf13943-2cb8-4b38-a0e6-42dca3fdef6d/history
+X-User-Id: e9d5d6fd-8d2c-4c3e-8d44-dfc246343d9e
+
+### deleteTask
+DELETE http://localhost:5123/api/tasks/3fda53f3-c9ca-4909-9365-15679df938c5
+X-User-Id: e9d5d6fd-8d2c-4c3e-8d44-dfc246343d9e
+
+##################################################################################
+### Requisições para Relatórios
+##################################################################################
+
+### getPerformanceReport
+GET http://localhost:5123/api/reports/performance
+X-User-Id: e9d5d6fd-8d2c-4c3e-8d44-dfc246343d9e
