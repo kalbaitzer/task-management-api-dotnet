@@ -37,7 +37,7 @@ A API implementa as seguintes regras de negócio:
 - **Conteinerização**: Docker
 - **Ambiente de Desenvolvimento**: Visual Studio Code
 - **Versionamento de Código**: Git e GitHub
-- **Teste da API**: Postman
+- **Teste da API**: Rest Client for Visual Studio Code
 
 ---
 
@@ -68,77 +68,79 @@ Esta é a maneira mais simples e recomendada de executar toda a aplicação.
 ### Passos
 1. **Criação do arquivo `Dockerfile`**: Na raiz do projeto, crie um arquivo com nome `Dockerfile` com o seguinte conteúdo:
    ```yaml
-      # Estágio 1: Build (Compilação)
-      # Usamos a imagem do SDK completo do .NET 9 para compilar a aplicação
-      FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
-      WORKDIR /
+   # Estágio 1: Build (Compilação)
+   # Usamos a imagem do SDK completo do .NET 9 para compilar a aplicação
+   FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+   WORKDIR /
 
-      # Copia os arquivos de projeto (.csproj) e o arquivo de solução (.sln) primeiro
-      COPY ["TaskManagementAPI.API/TaskManagementAPI.API.csproj", "TaskManagementAPI.API/"]
-      COPY ["TaskManagementAPI.Application/TaskManagementAPI.Application.csproj", "TaskManagementAPI.Application/"]
-      COPY ["TaskManagementAPI.Core/TaskManagementAPI.Core.csproj", "TaskManagementAPI.Core/"]
-      COPY ["TaskManagementAPI.Infrastructure/TaskManagementAPI.Infrastructure.csproj", "TaskManagementAPI.Infrastructure/"]
-      COPY ["TaskManagementAPI.sln", "."]
+   # Copia os arquivos de projeto (.csproj) e o arquivo de solução (.sln) primeiro
+   COPY ["src/TaskManagementAPI.API/TaskManagementAPI.API.csproj", "src/TaskManagementAPI.API/"]
+   COPY ["src/TaskManagementAPI.Application/TaskManagementAPI.Application.csproj", "src/TaskManagementAPI.Application/"]
+   COPY ["src/TaskManagementAPI.Core/TaskManagementAPI.Core.csproj", "src/TaskManagementAPI.Core/"]
+   COPY ["src/TaskManagementAPI.Infrastructure/TaskManagementAPI.Infrastructure.csproj", "src/TaskManagementAPI.Infrastructure/"]
+   COPY ["src/TaskManagementAPI.Application.Tests/TaskManagementAPI.Application.Tests.csproj", "src/TaskManagementAPI.Application.Tests/"] 
+   #
+   COPY ["TaskManagementAPI.sln", "."]
 
-      # Restaura as dependências NuGet (isso é feito antes para aproveitar o cache do Docker)
-      RUN dotnet restore TaskManagementAPI.sln
+   # Restaura as dependências NuGet (isso é feito antes para aproveitar o cache do Docker)
+   RUN dotnet restore TaskManagementAPI.sln
 
-      # Copia todo o resto do código fonte
-      COPY . .
+   # Copia todo o resto do código fonte
+   COPY . .
 
-      # Publica a aplicação em modo de Release, otimizada para produção
-      WORKDIR "TaskManagementAPI.API"
-      RUN dotnet publish "TaskManagementAPI.API.csproj" -c Release -o /app/publish
+   # Publica a aplicação em modo de Release, otimizada para produção
+   WORKDIR "src/TaskManagementAPI.API"
+   RUN dotnet publish "TaskManagementAPI.API.csproj" -c Release -o /app/publish
 
-      # Estágio 2: Final (Execução)
-      # Usamos a imagem do ASP.NET, que é menor
-      FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
-      WORKDIR /app
+   # Estágio 2: Final (Execuçãoo)
+   # Usamos a imagem do ASP.NET, que é menor
+   FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
+   WORKDIR /app
 
-      # Copia apenas os arquivos publicados do estágio de build
-      COPY --from=build /app/publish .
+   # Copia apenas os arquivos publicados do estágio de build
+   COPY --from=build /app/publish .
 
-      # Define o ponto de entrada, o comando que será executado quando o contêiner iniciar
-      ENTRYPOINT ["dotnet", "TaskManagementAPI.API.dll"]
+   # Define o ponto de entrada, o comando que será executado quando o contêiner iniciar
+   ENTRYPOINT ["dotnet", "TaskManagementAPI.API.dll"]
    ```
    Este arquivo está disponível na raiz do projeto.
 
 2. **Criação do arquivo `docker-compose.yml`**: Na raiz do projeto, crie um arquivo `docker-compose.yml` com o seguinte conteúdo:
    ```yaml
-      # Configuração do container para o ambiente (computador) de desenvolvimento
+   # Configuração do container para o ambiente (computador) de desenvolvimento
 
-      services:
-        # Serviço do Banco de Dados PostgreSQL
-        db:
-          image: postgres:16 # Usa a imagem oficial do PostgreSQL
-          container_name: task-management-db
-          restart: always
-          environment:
-            - POSTGRES_USER=postgres
-            - POSTGRES_PASSWORD=sql_pass # Use a mesma senha do seu appsettings
-            - POSTGRES_DB=task_management_db
-          ports:
-            - "5433:5432" # Mapeia a porta 5432 do contêiner para a porta 5433 da sua máquina
-          volumes:
-            - postgres_data:/var/lib/postgresql/data # Garante que os dados do banco persistam
+   services:
+   # Serviço do Banco de Dados PostgreSQL
+   db:
+       image: postgres:16 # Usa a imagem oficial do PostgreSQL
+       container_name: task-management-db
+       restart: always
+       environment:
+       - POSTGRES_USER=postgres
+       - POSTGRES_PASSWORD=sql_pass # Use a mesma senha do seu appsettings
+       - POSTGRES_DB=task_management_db
+       ports:
+       - "5433:5432" # Mapeia a porta 5432 do contêiner para a porta 5433 da sua máquina
+       volumes:
+       - postgres_data:/var/lib/postgresql/data # Garante que os dados do banco persistam
 
-        # Serviço da sua API .NET
-        api:
-          container_name: task-management-api
-          build:
-            context: . # Constrói a imagem usando o Dockerfile na pasta atual
-            dockerfile: Dockerfile
-          ports:
-            - "5000:8080" # Mapeia a porta 8080 do contêiner para a porta 5000 da sua máquina
-          environment:
-            - ASPNETCORE_URLS=http://+:8080 # Diz à API para rodar na porta 8080 dentro do contêiner
-            - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=task_management_db;Username=postgres;Password=sql_pass
-          depends_on:
-            - db # Diz ao Docker para iniciar o contêiner 'db' antes do contêiner 'api'
+   # Serviço da sua API .NET
+   api:
+       container_name: task-management-api
+       build:
+       context: . # Constrói a imagem usando o Dockerfile na pasta atual
+       dockerfile: Dockerfile
+       ports:
+       - "5000:8080" # Mapeia a porta 8080 do contêiner para a porta 5000 da sua máquina
+       environment:
+       - ASPNETCORE_URLS=http://+:8080 # Diz à API para rodar na porta 8080 dentro do contêiner
+       - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=task_management_db;Username=postgres;Password=sql_pass
+       depends_on:
+       - db # Diz ao Docker para iniciar o contêiner 'db' antes do contêiner 'api'
 
-      # Define o volume nomeado para persistir os dados do PostgreSQL
-      volumes:
-        postgres_data:
+   # Define o volume nomeado para persistir os dados do PostgreSQL
+   volumes:
+   postgres_data:
    ```
    Este arquivo está disponível na raiz do projeto.
 
@@ -165,39 +167,39 @@ Esta é a maneira mais simples e recomendada de executar toda a aplicação.
    1. Crie uma pasta no computador onde o contêiner será executado com o nome `task-management-api`
    
    2. Crie um arquivo na pasta `task-management-api` com o nome `docker-compose.yml` com o seguinte conteúdo:
-      ```yaml
-         # Configuração do container para execução em outros computadores
+   ```yaml
+      # Configuração do container para execução em outros computadores
 
-         services:
-         # O serviço do banco de dados não muda nada.
-         db:
-            image: postgres:16
-            container_name: task-management-db
-            restart: always
-            environment:
-               - POSTGRES_USER=postgres
-               - POSTGRES_PASSWORD=sql_pass
-               - POSTGRES_DB=task_management_db
-            ports:
-               - "5433:5432"
-            volumes:
-               - postgres_data:/var/lib/postgresql/data
+      services:
+      # O serviço do banco de dados não muda nada.
+      db:
+      image: postgres:16
+      container_name: task-management-db
+      restart: always
+      environment:
+          - POSTGRES_USER=postgres
+          - POSTGRES_PASSWORD=sql_pass
+          - POSTGRES_DB=task_management_db
+      ports:
+          - "5433:5432"
+      volumes:
+          - postgres_data:/var/lib/postgresql/data
 
-         # O serviço da API é modificado
-         api:
-            container_name: task-management-api
-            image: kalbaitzer/task-management-api:1.0
-            ports:
-               - "5000:8080"
-            environment:
-               - ASPNETCORE_URLS=http://+:8080
-               - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=task_management_db;Username=postgres;Password=sql_pass
-            depends_on:
-               - db
+      # O serviço da API é modificado
+      api:
+      container_name: task-management-api
+      image: kalbaitzer/task-management-api:1.0
+      ports:
+          - "5000:8080"
+      environment:
+          - ASPNETCORE_URLS=http://+:8080
+          - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=task_management_db;Username=postgres;Password=sql_pass
+      depends_on:
+          - db
 
-         volumes:
-         postgres_data:
-      ```
+      volumes:
+      postgres_data:
+    ```
       O conteúdo deste arquivo é diferente do usado no computador de desenvolvimento.
       Este arquivo está disponível na raiz do projeto com o nome `docker-compose-runtime.yml`.
 

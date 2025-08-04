@@ -19,8 +19,6 @@
 /artifacts/
 
 # Arquivos de configuração de ambiente local (não devem ser compartilhados)
-**/appsettings.Development.json
-**/launchSettings.json
 **/secrets.json
 
 # Logs e arquivos de cache
