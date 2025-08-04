@@ -67,86 +67,86 @@ Esta é a maneira mais simples e recomendada de executar toda a aplicação.
 
 ### Passos
 1. **Criação do arquivo `Dockerfile`**: Na raiz do projeto, crie um arquivo com nome `Dockerfile` com o seguinte conteúdo:
-   ```yaml
-   # Estágio 1: Build (Compilação)
-   # Usamos a imagem do SDK completo do .NET 9 para compilar a aplicação
-   FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
-   WORKDIR /
+```yaml
+# Estágio 1: Build (Compilação)
+# Usamos a imagem do SDK completo do .NET 9 para compilar a aplicação
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+WORKDIR /
 
-   # Copia os arquivos de projeto (.csproj) e o arquivo de solução (.sln) primeiro
-   COPY ["src/TaskManagementAPI.API/TaskManagementAPI.API.csproj", "src/TaskManagementAPI.API/"]
-   COPY ["src/TaskManagementAPI.Application/TaskManagementAPI.Application.csproj", "src/TaskManagementAPI.Application/"]
-   COPY ["src/TaskManagementAPI.Core/TaskManagementAPI.Core.csproj", "src/TaskManagementAPI.Core/"]
-   COPY ["src/TaskManagementAPI.Infrastructure/TaskManagementAPI.Infrastructure.csproj", "src/TaskManagementAPI.Infrastructure/"]
-   COPY ["src/TaskManagementAPI.Application.Tests/TaskManagementAPI.Application.Tests.csproj", "src/TaskManagementAPI.Application.Tests/"] 
-   #
-   COPY ["TaskManagementAPI.sln", "."]
+# Copia os arquivos de projeto (.csproj) e o arquivo de solução (.sln) primeiro
+COPY ["src/TaskManagementAPI.API/TaskManagementAPI.API.csproj", "src/TaskManagementAPI.API/"]
+COPY ["src/TaskManagementAPI.Application/TaskManagementAPI.Application.csproj", "src/TaskManagementAPI.Application/"]
+COPY ["src/TaskManagementAPI.Core/TaskManagementAPI.Core.csproj", "src/TaskManagementAPI.Core/"]
+COPY ["src/TaskManagementAPI.Infrastructure/TaskManagementAPI.Infrastructure.csproj", "src/TaskManagementAPI.Infrastructure/"]
+COPY ["src/TaskManagementAPI.Application.Tests/TaskManagementAPI.Application.Tests.csproj", "src/TaskManagementAPI.Application.Tests/"] 
+#
+COPY ["TaskManagementAPI.sln", "."]
 
-   # Restaura as dependências NuGet (isso é feito antes para aproveitar o cache do Docker)
-   RUN dotnet restore TaskManagementAPI.sln
+# Restaura as dependências NuGet (isso é feito antes para aproveitar o cache do Docker)
+RUN dotnet restore TaskManagementAPI.sln
 
-   # Copia todo o resto do código fonte
-   COPY . .
+# Copia todo o resto do código fonte
+COPY . .
 
-   # Publica a aplicação em modo de Release, otimizada para produção
-   WORKDIR "src/TaskManagementAPI.API"
-   RUN dotnet publish "TaskManagementAPI.API.csproj" -c Release -o /app/publish
+# Publica a aplicação em modo de Release, otimizada para produção
+WORKDIR "src/TaskManagementAPI.API"
+RUN dotnet publish "TaskManagementAPI.API.csproj" -c Release -o /app/publish
 
-   # Estágio 2: Final (Execuçãoo)
-   # Usamos a imagem do ASP.NET, que é menor
-   FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
-   WORKDIR /app
+# Estágio 2: Final (Execuçãoo)
+# Usamos a imagem do ASP.NET, que é menor
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
+WORKDIR /app
 
-   # Copia apenas os arquivos publicados do estágio de build
-   COPY --from=build /app/publish .
+# Copia apenas os arquivos publicados do estágio de build
+COPY --from=build /app/publish .
 
-   # Define o ponto de entrada, o comando que será executado quando o contêiner iniciar
-   ENTRYPOINT ["dotnet", "TaskManagementAPI.API.dll"]
-   ```
-   Este arquivo está disponível na raiz do projeto.
+# Define o ponto de entrada, o comando que será executado quando o contêiner iniciar
+ENTRYPOINT ["dotnet", "TaskManagementAPI.API.dll"]
+```
+Este arquivo está disponível na raiz do projeto.
 
 2. **Criação do arquivo `docker-compose.yml`**: Na raiz do projeto, crie um arquivo `docker-compose.yml` com o seguinte conteúdo:
-   ```yaml
-   # Configuração do container para o ambiente (computador) de desenvolvimento
+```yaml
+# Configuração do container para o ambiente (computador) de desenvolvimento
 
-   services:
-   # Serviço do Banco de Dados PostgreSQL
-   db:
-       image: postgres:16 # Usa a imagem oficial do PostgreSQL
-       container_name: task-management-db
-       restart: always
-       environment:
-       - POSTGRES_USER=postgres
-       - POSTGRES_PASSWORD=sql_pass # Use a mesma senha do seu appsettings
-       - POSTGRES_DB=task_management_db
-       ports:
-       - "5433:5432" # Mapeia a porta 5432 do contêiner para a porta 5433 da sua máquina
-       volumes:
-       - postgres_data:/var/lib/postgresql/data # Garante que os dados do banco persistam
+services:
+# Serviço do Banco de Dados PostgreSQL
+db:
+    image: postgres:16 # Usa a imagem oficial do PostgreSQL
+    container_name: task-management-db
+    restart: always
+    environment:
+    - POSTGRES_USER=postgres
+    - POSTGRES_PASSWORD=sql_pass # Use a mesma senha do seu appsettings
+    - POSTGRES_DB=task_management_db
+    ports:
+    - "5433:5432" # Mapeia a porta 5432 do contêiner para a porta 5433 da sua máquina
+    volumes:
+    - postgres_data:/var/lib/postgresql/data # Garante que os dados do banco persistam
 
-   # Serviço da sua API .NET
-   api:
-       container_name: task-management-api
-       build:
-       context: . # Constrói a imagem usando o Dockerfile na pasta atual
-       dockerfile: Dockerfile
-       ports:
-       - "5000:8080" # Mapeia a porta 8080 do contêiner para a porta 5000 da sua máquina
-       environment:
-       - ASPNETCORE_URLS=http://+:8080 # Diz à API para rodar na porta 8080 dentro do contêiner
-       - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=task_management_db;Username=postgres;Password=sql_pass
-       depends_on:
-       - db # Diz ao Docker para iniciar o contêiner 'db' antes do contêiner 'api'
+# Serviço da sua API .NET
+api:
+    container_name: task-management-api
+    build:
+    context: . # Constrói a imagem usando o Dockerfile na pasta atual
+    dockerfile: Dockerfile
+    ports:
+    - "5000:8080" # Mapeia a porta 8080 do contêiner para a porta 5000 da sua máquina
+    environment:
+    - ASPNETCORE_URLS=http://+:8080 # Diz à API para rodar na porta 8080 dentro do contêiner
+    - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=task_management_db;Username=postgres;Password=sql_pass
+    depends_on:
+    - db # Diz ao Docker para iniciar o contêiner 'db' antes do contêiner 'api'
 
-   # Define o volume nomeado para persistir os dados do PostgreSQL
-   volumes:
-   postgres_data:
-   ```
-   Este arquivo está disponível na raiz do projeto.
+# Define o volume nomeado para persistir os dados do PostgreSQL
+volumes:
+postgres_data:
+```
+Este arquivo está disponível na raiz do projeto.
 
 3. **Criação dos contêineres**: No terminal, na raiz do projeto, execute:
    ```bash
-      docker-compose up --build -d
+   docker-compose up --build -d
    ```
    Serão criados dois contêineres: um para a API e outro para o PostgreSQL.
    A aplicação irá iniciar, e as migrações do banco de dados serão aplicadas automaticamente na primeira inicialização, criando todas as tabelas.
@@ -156,10 +156,10 @@ Esta é a maneira mais simples e recomendada de executar toda a aplicação.
 
 5. **Publicação no Docker Hub**: Para publicar no Docker Hub é necessário apenas o contêiner da API, pois o Docker baixa automaticmente a imagem do banco de dados (`PostgreSQL`) quando for executado em outros computadores. Para a publicação é necessário a execução dos seguintes comandos através do terminal, na raiz do projeto:
    ```bash
-      docker login
-      docker-compose build
-      docker tag src-api kalbaitzer/task-management-api:1.0
-      docker push kalbaitzer/task-management-api:1.0
+   docker login
+   docker-compose build
+   docker tag src-api kalbaitzer/task-management-api:1.0
+   docker push kalbaitzer/task-management-api:1.0
    ```
 
 6. **Execução do contêiner em outros computadores**: Para executar o contêiner em outros computadores é necessário executar os seguintes passos:
@@ -205,7 +205,7 @@ Esta é a maneira mais simples e recomendada de executar toda a aplicação.
 
    3. No terminal, na pasta `task-management-api`, execute:
       ```bash
-         docker-compose up -d
+      docker-compose up -d
       ```
 
       É importante que o [Docker Desktop](https://www.docker.com/products/docker-desktop/) esteja instalado e em execução neste computador onde a imagem do contêiner será executada.
