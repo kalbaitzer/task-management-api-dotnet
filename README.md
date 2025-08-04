@@ -167,43 +167,43 @@ Esta é a maneira mais simples e recomendada de executar toda a aplicação.
    - Crie uma pasta no computador onde o contêiner será executado com o nome `task-management-api`
    
    - Crie um arquivo na pasta `task-management-api` com o nome `docker-compose.yml` com o seguinte conteúdo:
-  ```yaml
-     # Configuração do container para execução em outros computadores
+    ```yaml
+        # Configuração do container para execução em outros computadores
 
-     services:
-     # O serviço do banco de dados não muda nada.
-     db:
-     image: postgres:16
-     container_name: task-management-db
-     restart: always
-     environment:
-         - POSTGRES_USER=postgres
-         - POSTGRES_PASSWORD=sql_pass
-         - POSTGRES_DB=task_management_db
-     ports:
-         - "5433:5432"
-     volumes:
-         - postgres_data:/var/lib/postgresql/data
+        services:
+        # O serviço do banco de dados não muda nada.
+        db:
+        image: postgres:16
+        container_name: task-management-db
+        restart: always
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=sql_pass
+            - POSTGRES_DB=task_management_db
+        ports:
+            - "5433:5432"
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
 
-     # O serviço da API é modificado
-     api:
-     container_name: task-management-api
-     image: kalbaitzer/task-management-api:1.0
-     ports:
-         - "5000:8080"
-     environment:
-         - ASPNETCORE_URLS=http://+:8080
-         - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=task_management_db;Username=postgres;Password=sql_pass
-     depends_on:
-         - db
+        # O serviço da API é modificado
+        api:
+        container_name: task-management-api
+        image: kalbaitzer/task-management-api:1.0
+        ports:
+            - "5000:8080"
+        environment:
+            - ASPNETCORE_URLS=http://+:8080
+            - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=task_management_db;Username=postgres;Password=sql_pass
+        depends_on:
+            - db
 
-     volumes:
-     postgres_data:
-   ```
+        volumes:
+        postgres_data:
+    ```
      O conteúdo deste arquivo é diferente do usado no computador de desenvolvimento.
      Este arquivo está disponível na raiz do projeto com o nome `docker-compose-runtime.yml`.
 
-   - No terminal, na pasta `task-management-api`, execute:
+    - No terminal, na pasta `task-management-api`, execute:
      ```bash
      docker-compose up -d
      ```
