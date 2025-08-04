@@ -158,7 +158,7 @@ Esta é a maneira mais simples e recomendada de executar toda a aplicação.
    ```bash
    docker login
    docker-compose build
-   docker tag src-api kalbaitzer/task-management-api-dotnet:1.0
+   docker tag taskmanagementapi-dotnet-api kalbaitzer/task-management-api-dotnet:1.0
    docker push kalbaitzer/task-management-api-dotnet:1.0
    ```
 
