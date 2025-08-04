@@ -158,8 +158,8 @@ Esta é a maneira mais simples e recomendada de executar toda a aplicação.
    ```bash
    docker login
    docker-compose build
-   docker tag src-api kalbaitzer/task-management-api:1.0
-   docker push kalbaitzer/task-management-api:1.0
+   docker tag src-api kalbaitzer/task-management-api-dotnet:1.0
+   docker push kalbaitzer/task-management-api-dotnet:1.0
    ```
 
 6. **Execução do contêiner em outros computadores**: Para executar o contêiner em outros computadores é necessário executar os seguintes passos:
@@ -187,8 +187,8 @@ Esta é a maneira mais simples e recomendada de executar toda a aplicação.
 
    # O serviço da API é modificado
    api:
-   container_name: task-management-api
-   image: kalbaitzer/task-management-api:1.0
+   container_name: task-management-api-dotnet
+   image: kalbaitzer/task-management-api-dotnet:1.0
    ports:
        - "5000:8080"
    environment:
