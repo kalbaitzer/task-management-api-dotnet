@@ -1,34 +1,34 @@
-# Estágio 1: Build (Compilação)
-# Usamos a imagem do SDK completo do .NET 9 para compilar a aplicação
+# EstÃ¡gio 1: Build (CompilaÃ§Ã£o)
+# Usamos a imagem do SDK completo do .NET 9 para compilar a aplicaÃ§Ã£o
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /
 
-# Copia os arquivos de projeto (.csproj) e o arquivo de solução (.sln) primeiro
-COPY ["TaskManagementAPI.API/TaskManagementAPI.API.csproj", "TaskManagementAPI.API/"]
-COPY ["TaskManagementAPI.Application/TaskManagementAPI.Application.csproj", "TaskManagementAPI.Application/"]
-COPY ["TaskManagementAPI.Core/TaskManagementAPI.Core.csproj", "TaskManagementAPI.Core/"]
-COPY ["TaskManagementAPI.Infrastructure/TaskManagementAPI.Infrastructure.csproj", "TaskManagementAPI.Infrastructure/"]
-COPY ["TaskManagementAPI.Application.Tests/TaskManagementAPI.Application.Tests.csproj", "TaskManagementAPI.Application.Tests/"] 
+# Copia os arquivos de projeto (.csproj) e o arquivo de soluÃ§Ã£o (.sln) primeiro
+COPY ["src/TaskManagementAPI.API/TaskManagementAPI.API.csproj", "src/TaskManagementAPI.API/"]
+COPY ["src/TaskManagementAPI.Application/TaskManagementAPI.Application.csproj", "src/TaskManagementAPI.Application/"]
+COPY ["src/TaskManagementAPI.Core/TaskManagementAPI.Core.csproj", "src/TaskManagementAPI.Core/"]
+COPY ["src/TaskManagementAPI.Infrastructure/TaskManagementAPI.Infrastructure.csproj", "src/TaskManagementAPI.Infrastructure/"]
+COPY ["src/TaskManagementAPI.Application.Tests/TaskManagementAPI.Application.Tests.csproj", "src/TaskManagementAPI.Application.Tests/"] 
 #
 COPY ["TaskManagementAPI.sln", "."]
 
-# Restaura as dependências NuGet (isso é feito antes para aproveitar o cache do Docker)
+# Restaura as dependÃªncias NuGet (isso Ã© feito antes para aproveitar o cache do Docker)
 RUN dotnet restore TaskManagementAPI.sln
 
-# Copia todo o resto do código fonte
+# Copia todo o resto do cÃ³digo fonte
 COPY . .
 
-# Publica a aplicação em modo de Release, otimizada para produção
-WORKDIR "TaskManagementAPI.API"
+# Publica a aplicaÃ§Ã£o em modo de Release, otimizada para produÃ§Ã£o
+WORKDIR "src/TaskManagementAPI.API"
 RUN dotnet publish "TaskManagementAPI.API.csproj" -c Release -o /app/publish
 
-# Estágio 2: Final (Execução)
-# Usamos a imagem do ASP.NET, que é menor
+# EstÃ¡gio 2: Final (ExecuÃ§Ã£oo)
+# Usamos a imagem do ASP.NET, que Ã© menor
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
 WORKDIR /app
 
-# Copia apenas os arquivos publicados do estágio de build
+# Copia apenas os arquivos publicados do estÃ¡gio de build
 COPY --from=build /app/publish .
 
-# Define o ponto de entrada, o comando que será executado quando o contêiner iniciar
+# Define o ponto de entrada, o comando que serÃ¡ executado quando o contÃªiner iniciar
 ENTRYPOINT ["dotnet", "TaskManagementAPI.API.dll"]

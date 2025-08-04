@@ -3,7 +3,7 @@
 ##################################################################################
 
 ### createUser
-POST http://localhost:5123/api/users
+POST http://localhost:5000/api/users
 Content-Type: application/json
 
 {
@@ -13,7 +13,7 @@ Content-Type: application/json
 }
 
 ### createUser
-POST http://localhost:5123/api/users
+POST http://localhost:5000/api/users
 Content-Type: application/json
 
 {
@@ -23,13 +23,13 @@ Content-Type: application/json
 }
 
 ### getAllUsers
-GET http://localhost:5123/api/users
+GET http://localhost:5000/api/users
 
 ### getUserById
-GET http://localhost:5123/api/users/e888710c-5e56-457b-8703-3ca975a9c3b3
+GET http://localhost:5000/api/users/e888710c-5e56-457b-8703-3ca975a9c3b3
 
 ### updateUser
-PUT http://localhost:5123/api/users/9a61522c-e5a4-47a7-b52c-9507aa72e4f2
+PUT http://localhost:5000/api/users/9a61522c-e5a4-47a7-b52c-9507aa72e4f2
 Content-Type: application/json
 
 {
@@ -39,7 +39,7 @@ Content-Type: application/json
 }
 
 ### deleteUser
-DELETE http://localhost:5123/api/users/b03f0f94-468d-475d-a08f-98b2bcd859fb
+DELETE http://localhost:5000/api/users/b03f0f94-468d-475d-a08f-98b2bcd859fb
 
 
 ##################################################################################
@@ -47,7 +47,7 @@ DELETE http://localhost:5123/api/users/b03f0f94-468d-475d-a08f-98b2bcd859fb
 ##################################################################################
 
 ### createProject
-POST http://localhost:5123/api/projects
+POST http://localhost:5000/api/projects
 X-User-Id: f6bc4a46-d749-4dfd-aec5-133fcf67f083
 Content-Type: application/json
 
@@ -57,7 +57,7 @@ Content-Type: application/json
 }
 
 ### createProject
-POST http://localhost:5123/api/projects
+POST http://localhost:5000/api/projects
 X-User-Id: f6bc4a46-d749-4dfd-aec5-133fcf67f083
 Content-Type: application/json
 
@@ -67,15 +67,15 @@ Content-Type: application/json
 }
 
 ### getAllProjects
-GET http://localhost:5123/api/projects
+GET http://localhost:5000/api/projects
 X-User-Id: f6bc4a46-d749-4dfd-aec5-133fcf67f083
 
 ### getProjectById
-GET http://localhost:5123/api/projects/8c4cf56a-d20d-4017-864f-1b9220529e4c
+GET http://localhost:5000/api/projects/8c4cf56a-d20d-4017-864f-1b9220529e4c
 X-User-Id: 5ae4eb99-73fc-4dc0-9e9d-f35b548ac691
 
 ### updateProject
-PUT http://localhost:5123/api/projects/03078fc9-fbd9-4aab-857b-876034107087
+PUT http://localhost:5000/api/projects/03078fc9-fbd9-4aab-857b-876034107087
 X-User-Id: d5a1a361-40f7-48ec-8b31-81ce17a990f4
 Content-Type: application/json
 
@@ -85,7 +85,7 @@ Content-Type: application/json
 }
 
 ### deletProject
-DELETE http://localhost:5123/api/projects/03078fc9-fbd9-4aab-857b-876034107087
+DELETE http://localhost:5000/api/projects/03078fc9-fbd9-4aab-857b-876034107087
 X-User-Id: d5a1a361-40f7-48ec-8b31-81ce17a990f4
 
 
@@ -94,7 +94,7 @@ X-User-Id: d5a1a361-40f7-48ec-8b31-81ce17a990f4
 ##################################################################################
 
 ### createTaskForProject
-POST http://localhost:5123/api/tasks/projects/63f63bdd-0c04-4db0-88cb-aa66f248a3c2
+POST http://localhost:5000/api/tasks/projects/63f63bdd-0c04-4db0-88cb-aa66f248a3c2
 X-User-Id: f6bc4a46-d749-4dfd-aec5-133fcf67f083
 Content-Type: application/json
 
@@ -106,15 +106,15 @@ Content-Type: application/json
 }
 
 ### getTasksByProject
-GET http://localhost:5123/api/tasks/projects/8c4cf56a-d20d-4017-864f-1b9220529e4c
+GET http://localhost:5000/api/tasks/projects/8c4cf56a-d20d-4017-864f-1b9220529e4c
 X-User-Id: f6bc4a46-d749-4dfd-aec5-133fcf67f083
 
 ### getTaskById
-GET http://localhost:5123/api/tasks/2bf13943-2cb8-4b38-a0e6-42dca3fdef6d
+GET http://localhost:5000/api/tasks/2bf13943-2cb8-4b38-a0e6-42dca3fdef6d
 X-User-Id: e9d5d6fd-8d2c-4c3e-8d44-dfc246343d9e
 
 ### updateTask
-PUT http://localhost:5123/api/tasks/2bf13943-2cb8-4b38-a0e6-42dca3fdef6d
+PUT http://localhost:5000/api/tasks/2bf13943-2cb8-4b38-a0e6-42dca3fdef6d
 X-User-Id: e9d5d6fd-8d2c-4c3e-8d44-dfc246343d9e
 Content-Type: application/json
 
@@ -126,7 +126,7 @@ Content-Type: application/json
 }
 
 ### updateTaskStatus
-PATCH http://localhost:5123/api/tasks/2bf13943-2cb8-4b38-a0e6-42dca3fdef6d/status
+PATCH http://localhost:5000/api/tasks/2bf13943-2cb8-4b38-a0e6-42dca3fdef6d/status
 X-User-Id: e9d5d6fd-8d2c-4c3e-8d44-dfc246343d9e
 Content-Type: application/json
 
@@ -135,7 +135,7 @@ Content-Type: application/json
 }
 
 ### addComment
-POST http://localhost:5123/api/tasks/2bf13943-2cb8-4b38-a0e6-42dca3fdef6d/comments
+POST http://localhost:5000/api/tasks/2bf13943-2cb8-4b38-a0e6-42dca3fdef6d/comments
 X-User-Id: e9d5d6fd-8d2c-4c3e-8d44-dfc246343d9e
 Content-Type: application/json
 
@@ -144,11 +144,11 @@ Content-Type: application/json
 }
 
 ### getTaskHistory
-GET http://localhost:5123/api/tasks/2bf13943-2cb8-4b38-a0e6-42dca3fdef6d/history
+GET http://localhost:5000/api/tasks/2bf13943-2cb8-4b38-a0e6-42dca3fdef6d/history
 X-User-Id: e9d5d6fd-8d2c-4c3e-8d44-dfc246343d9e
 
 ### deleteTask
-DELETE http://localhost:5123/api/tasks/3fda53f3-c9ca-4909-9365-15679df938c5
+DELETE http://localhost:5000/api/tasks/3fda53f3-c9ca-4909-9365-15679df938c5
 X-User-Id: e9d5d6fd-8d2c-4c3e-8d44-dfc246343d9e
 
 ##################################################################################
@@ -156,5 +156,5 @@ X-User-Id: e9d5d6fd-8d2c-4c3e-8d44-dfc246343d9e
 ##################################################################################
 
 ### getPerformanceReport
-GET http://localhost:5123/api/reports/performance
+GET http://localhost:5000/api/reports/performance
 X-User-Id: e9d5d6fd-8d2c-4c3e-8d44-dfc246343d9e
