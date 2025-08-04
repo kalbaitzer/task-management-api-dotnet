@@ -164,9 +164,9 @@ Esta é a maneira mais simples e recomendada de executar toda a aplicação.
 
 6. **Execução do contêiner em outros computadores**: Para executar o contêiner em outros computadores é necessário executar os seguintes passos:
    
-   Crie uma pasta no computador onde o contêiner será executado com o nome `task-management-api`
+   Crie uma pasta no computador onde o contêiner será executado com o nome `task-management-api-dotnet`
    
-   Crie um arquivo na pasta `task-management-api` com o nome `docker-compose.yml` com o seguinte conteúdo:
+   Crie um arquivo na pasta `task-management-api-dotnet` com o nome `docker-compose.yml` com o seguinte conteúdo:
    ```yaml
    # Configuração do container para execução em outros computadores
 
@@ -203,7 +203,7 @@ Esta é a maneira mais simples e recomendada de executar toda a aplicação.
    O conteúdo deste arquivo é diferente do usado no computador de desenvolvimento.
    Este arquivo está disponível na raiz do projeto com o nome `docker-compose-runtime.yml`.
 
-   No terminal, na pasta `task-management-api`, execute:
+   No terminal, na pasta `task-management-api-dotnet`, execute:
    ```bash
    docker-compose up -d
    ```
