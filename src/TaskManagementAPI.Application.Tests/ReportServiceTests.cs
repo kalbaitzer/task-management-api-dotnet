@@ -115,7 +115,7 @@ public class ReportServiceTests
         var userId = Guid.NewGuid();
 
         // Cria a entidade de Usuário que "existe" no banco.
-        var user = new User { Id = userId, Role = "Userr" };
+        var user = new User { Id = userId, Role = "User" };
 
         // Configura o mock do repositório para "encontrar" o usuário.
         _userRepositoryMock.Setup(repo => repo.GetByIdAsync(userId)).ReturnsAsync(user);

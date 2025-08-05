@@ -104,7 +104,7 @@ public class TaskServiceTests
     }
 
     /// <summary>
-    /// Teste: a exceção NotFoundExcption é lançada quando a tarefa não existe, ou seja, não está cadastrada,
+    /// Teste: a exceção NotFoundExcption é lançada quando a tarefa não existe, ou seja, não está cadastrada.
     /// </summary>
     [Fact]
     public async Task GetTaskByIdAsync_ShouldThrowNotFoundException_WhenTaskDoesNotExist()
@@ -334,7 +334,7 @@ public class TaskServiceTests
         _taskRepositoryMock.Verify(repo => repo.AddAsync(It.IsAny<TaskEntity>()), Times.Never);
         _unitOfWorkMock.Verify(uow => uow.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
     }
-    
+
     // --- TESTE PARA A REGRA DE NEGÓCIO 6 ---
 
     /// <summary>
@@ -378,7 +378,7 @@ public class TaskServiceTests
                 history.FieldName == null &&       // Garante que não é uma atualização de campo.
                 history.OldValue == null &&
                 history.NewValue == null
-            )), 
+            )),
             Times.Once // Garante que foi chamado apenas uma vez.
         );
 
@@ -411,11 +411,11 @@ public class TaskServiceTests
         var exception = await Assert.ThrowsAsync<NotFoundException>(
             () => _taskService.AddCommentAsync(nonExistentTaskId, commentDto, userId)
         );
-        
+
         // Verifica se a mensagem da exceção é a correta.
         Assert.Equal("Tarefa não encontrada.", exception.Message);
 
         // Garante que, se a tarefa não existe, nada é salvo.
         _unitOfWorkMock.Verify(uow => uow.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
-    }    
+    }
 }
